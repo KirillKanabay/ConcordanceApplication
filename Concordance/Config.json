@@ -1,0 +1,28 @@
+{
+  //Указывает пути к файлам, которые необходимо обработать
+  "inputFiles": {
+
+    /*
+    "Название документа" :{ 
+      "Path": "Путь к документу",
+      "PageSize": Кол-во строк на одной странице
+    }
+     Пример:
+     "Peter" :{ 
+        "Path":"C:\\Users\\User\\Documents\\Peter.txt",
+        "PageSize" : 3
+      },
+     "Text" : {
+        "Path" : "C:\\Users\\User\\Documents\\Text.txt",
+        "PageSize" : 5
+      },
+    */
+
+    "text": {
+      "Path": "text\\text.txt",
+      "PageSize": 3
+    }
+  },
+  //Папка с результатами обработки
+  "outputPath": "result"
+}
