@@ -23,15 +23,23 @@ namespace Concordance.Services
             var inputFileSection = _configuration.GetSection("inputFiles");
             foreach(var section in inputFileSection.GetChildren())
             {
-                string path = section["Path"];
-                int pageSize = int.Parse(section["PageSize"]);
-                var text = ReadTextFromFile(path, pageSize);
-
-                if (text != null)
+                try
                 {
-                    textList.Add(text);
-                    ConsoleExtensions.WriteLineWithColor($"Текст {text.Name} добавлен в обработку.", ConsoleColor.Green);
+                    string path = section["Path"];
+                    int pageSize = int.Parse(section["PageSize"]);
+                    var text = ReadTextFromFile(path, pageSize);
+
+                    if (text != null)
+                    {
+                        textList.Add(text);
+                        ConsoleExtensions.WriteLineWithColor($"Текст {text.Name} добавлен в обработку.", ConsoleColor.Green);
+                    }
                 }
+                catch(Exception e)
+                {
+                    ConsoleExtensions.WriteLineError($"Ошибка обработки файла конфигурации: {e.Message}");
+                }
+                
                 
             }
 
