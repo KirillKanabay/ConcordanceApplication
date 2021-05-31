@@ -3,6 +3,10 @@
     {
       "Path": "text\\text.txt",
       "PageSize": 3
+    },
+    {
+      "Path": "text\\text2.txt",
+      "PageSize": 3
     }
   ],
   "outputPath": "result"

@@ -28,7 +28,7 @@ namespace Concordance.Services
         private void HandleWords(string page, int pageNumber)
         {
             //Разделяем страницу на слова
-            char[] separators = new[] {',', ' ', '.', '(', ')', ':', ';', '-', '!', '?', '_', '\r', '\n'};
+            char[] separators = new[] {',', ' ', '.', '(', ')', ':', ';', '-', '!', '?', '_', '—', '\r','\n'};
             string[] words = page.Split(separators,
                 StringSplitOptions.RemoveEmptyEntries);
 

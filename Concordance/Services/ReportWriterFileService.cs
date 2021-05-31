@@ -6,12 +6,10 @@ namespace Concordance.Services
 {
     public class ReportWriterFileService:IReportWriterService
     {
-        private readonly IConfiguration _configuration;
         private readonly string _path;
         public ReportWriterFileService(IConfiguration configuration)
         {
-            _configuration = configuration;
-            _path = _configuration["outputPath"];
+            _path = configuration["outputPath"];
         }
         public void Write(IReportService reportService)
         {
@@ -20,7 +18,7 @@ namespace Concordance.Services
                 Directory.CreateDirectory(_path);
             }
 
-            using var fs = new FileStream($"{_path}/{reportService.Text.Name}_ConcordanceReport.txt", FileMode.OpenOrCreate);
+            using var fs = new FileStream($"{_path}/{reportService.Text.Name}_ConcordanceReport.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
             using var writer = new StreamWriter(fs);
             writer.Write(reportService.ToString());
         }

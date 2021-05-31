@@ -42,7 +42,7 @@ namespace Concordance.Services
         {
             try
             {
-                using var fs = new FileStream(path, FileMode.OpenOrCreate);
+                using var fs = new FileStream(path, FileMode.Open);
                 using var reader = new StreamReader(fs);
 
                 Text text = new Text { Name = Path.GetFileNameWithoutExtension(path), PageSize = pageSize };
