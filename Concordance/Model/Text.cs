@@ -2,11 +2,17 @@
 
 namespace Concordance.Model
 {
+    /// <summary>
+    /// Класс текста
+    /// </summary>
     public class Text
     {
-        public string Name { get; set; }
-        public int PageSize { get; set; }
-        public List<string> Pages { get; set; }
+        /// <summary>
+        /// Название текста
+        /// </summary>
+        public string Name { get; }
+
+        public ICollection<Page> Pages { get; }
 
         public Text()
         {

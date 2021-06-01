@@ -6,29 +6,29 @@ using System.Text;
 
 namespace Concordance.Model
 {
-    public class Word:IComparer, IComparable
+    /// <summary>
+    /// Класс слова
+    /// </summary>
+    public class Word : IComparer, IComparable
     {
-        public string Value { get; }
-        public char FirstChar { get; }
-        public int Count { get; set; }
-        public List<int> PageNumbers { get; }
+        /// <summary>
+        /// Содержимое слова
+        /// </summary>
+        public string Content { get; }
+        public char FirstChar => Content[0];
 
-        public Word(string value, int page)
+        public Word(string content)
         {
-            Value = value;
-            FirstChar = value[0];
-            Count++;
-            PageNumbers = new List<int>();
-            AddPage(page);
+            Content = content;
         }
 
-        public Word AddPage(int page)
-        {
-            if (PageNumbers.FirstOrDefault(p => p == page) == default)
-                PageNumbers.Add(page);
+        //public Word AddPage(int page)
+        //{
+        //    if (PageNumbers.FirstOrDefault(p => p == page) == default)
+        //        PageNumbers.Add(page);
 
-            return this;
-        }
+        //    return this;
+        //}
 
         public int Compare(object? x, object? y)
         {
@@ -42,17 +42,17 @@ namespace Concordance.Model
             return Compare(this, obj);
         }
 
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(Value)
-                .Append(new string('.', 60 - Value.Length))
-                .Append(Count)
-                .Append(" : ")
-                .Append(string.Join(' ', PageNumbers));
+        //public override string ToString()
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    sb.Append(Value)
+        //        .Append(new string('.', 60 - Value.Length))
+        //        .Append(Count)
+        //        .Append(" : ")
+        //        .Append(string.Join(' ', PageNumbers));
 
-            return sb.ToString();
-        }
+        //    return sb.ToString();
+        //}
     
     }
 }
