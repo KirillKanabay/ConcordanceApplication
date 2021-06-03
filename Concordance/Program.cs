@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Text;
+using Concordance.Configurations;
 using Concordance.Helpers;
-using Concordance.Services;
+using Concordance.Interfaces;
+using Concordance.IO;
 using Concordance.View;
 using Microsoft.Extensions.Configuration;
 
@@ -11,8 +12,7 @@ namespace Concordance
     class Program
     {
         private static IConfiguration _configuration;
-        private static ITextReaderService _textReaderService;
-        private static IReportWriterService _reportWriterService;
+        private static ITextInfoParser _textInfoParser;
         private static ConcordanceView _concordanceView;
         private static void GetConfigurations()
         {
@@ -24,9 +24,8 @@ namespace Concordance
         
         private static void InitDependencies()
         {
-            _textReaderService = new TextReaderFromConfigService(_configuration);
-            _reportWriterService = new ReportWriterFileService(_configuration);
-            _concordanceView = new ConcordanceView(_textReaderService, _reportWriterService);
+            _textInfoParser = new ConfigurationTextInfoParser(_configuration);
+            _concordanceView = new ConcordanceView(_textInfoParser);
         }
         
          

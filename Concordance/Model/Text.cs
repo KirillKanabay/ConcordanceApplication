@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Concordance.Model
 {
@@ -11,12 +12,28 @@ namespace Concordance.Model
         /// Название текста
         /// </summary>
         public string Name { get; }
+        /// <summary>
+        /// Текст в исходном формате
+        /// </summary>
+        public string Content { get; }
 
-        public ICollection<Page> Pages { get; }
+        /// <summary>
+        /// Страницы текста
+        /// </summary>
+        public IEnumerable<Page> Pages { get; }
 
-        public Text()
+        /// <summary>
+        /// Размер одной страницы
+        /// </summary>
+        public int PageSize { get; }
+
+        public Text(string name, string content, int pageSize)
         {
-            Pages = new List<string>();
+            Name = name;
+            Content = content;
+            PageSize = pageSize;
+
+            Pages = Page.Split(Content, PageSize);
         }
     }
 }

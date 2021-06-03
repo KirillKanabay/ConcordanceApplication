@@ -1,42 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Concordance.Helpers;
+using Concordance.Interfaces;
+using Concordance.IO;
 using Concordance.Model;
-using Concordance.Services;
+using Concordance.Report;
 
 namespace Concordance.View
 {
     public class ConcordanceView
     {
-        private readonly IReportWriterService _reportWriter;
-        private readonly ITextReaderService _textReader;
-        private List<Text> _textList;
-        public ConcordanceView(ITextReaderService textReader, IReportWriterService reportWriterService)
+        private readonly ITextInfoParser _textInfoParser;
+
+        private IEnumerable<Text> _textList;
+        private int _pageSize;
+        private string _outputDirectory;
+
+        public ConcordanceView(ITextInfoParser textInfoParser)
         {
-            _textReader = textReader;
-            _reportWriter = reportWriterService;
+            _textInfoParser = textInfoParser;
         }
 
         public void Show()
         {
-            do
-            {
-                LoadTextList();
-                HandleTextList();
-                Console.WriteLine();
-            } while (true);
-
+            LoadTextList();
+            HandleTextList();
         }
 
         private void LoadTextList()
         {
-            ConsoleExtensions.WriteLineWithColor("!Пути к обрабатываемым файлам находятся в Config.json, убедитесь в правильности заполнения!", ConsoleColor.Red);
+            ConsoleExtensions.WriteLineWithColor(
+                "!Пути к обрабатываемым файлам находятся в Config.json, убедитесь в правильности заполнения!",
+                ConsoleColor.Red);
             Console.WriteLine();
-            
+
             if (ConsoleExtensions.CheckContinue("Желаете продолжить? (y/n):"))
             {
-                Console.WriteLine();
-                _textList = _textReader.GetTextList();
+                IEnumerable<string> filePaths = GetFilePaths();
+                GetPageSize();
+                _textList = new List<Text>();
+                foreach (var filePath in filePaths)
+                {
+                    try
+                    {
+                        var reader = new TextFileReader(filePath, _pageSize);
+                        var text = reader.Read();
+                        ((List<Text>)_textList).Add(text);
+                        ConsoleExtensions.WriteLineWithColor($"Текст {text.Name} добавлен в обработку.",
+                            ConsoleColor.Green);
+                    }
+                    catch
+                    {
+                        ConsoleExtensions.WriteLineError($"Не удалось открыть файл: {filePath}");
+                    }
+                }
             }
             else
             {
@@ -46,18 +64,20 @@ namespace Concordance.View
 
         private void HandleTextList()
         {
-            ConsoleExtensions.WriteLineWithColor($"Загружено {_textList.Count} файлов.", ConsoleColor.Green);
+            ConsoleExtensions.WriteLineWithColor($"Загружено {_textList.Count()} файлов.", ConsoleColor.Green);
             Console.WriteLine();
 
             if (ConsoleExtensions.CheckContinue("Начать обработку? (y/n):"))
             {
+                GetOutputDirectory();
                 foreach (var text in _textList)
                 {
-                    var report = new ReportService(text);
+                    var report = new ConcordanceReport(text);
                     report.MakeReport();
                     try
                     {
-                        _reportWriter.Write(report);
+                        var concordanceReportFileWriter = new ConcordanceReportFileWriter(_outputDirectory);
+                        concordanceReportFileWriter.Write(report);
                         ConsoleExtensions.WriteLineWithColor($"{text.Name} - обработан.", ConsoleColor.Green);
                     }
                     catch (Exception e)
@@ -71,6 +91,47 @@ namespace Concordance.View
             }
             else
             {
+                Environment.Exit(0);
+            }
+        }
+
+        private IEnumerable<string> GetFilePaths()
+        {
+            try
+            {
+                return _textInfoParser.GetInputFilePaths();
+            }
+            catch (Exception e)
+            {
+                ConsoleExtensions.WriteLineError($"Не удалось извлечь пути к входным файлам: {e.Message}");
+                Environment.Exit(0);
+            }
+
+            return null;
+        }
+
+        private void GetPageSize()
+        {
+            try
+            {
+                _pageSize = _textInfoParser.GetPageSize();
+            }
+            catch (Exception e)
+            {
+                ConsoleExtensions.WriteLineError($"Не удалось извлечь размер страницы: {e.Message}");
+                Environment.Exit(0);
+            }
+        }
+
+        private void GetOutputDirectory()
+        {
+            try
+            {
+                _outputDirectory = _textInfoParser.GetOutputDirectory();
+            }
+            catch (Exception e)
+            {
+                ConsoleExtensions.WriteLineError($"Не удалось извлечь путь директории с результатами обработки: {e.Message}");
                 Environment.Exit(0);
             }
         }

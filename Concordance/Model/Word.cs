@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Concordance.Model
 {
@@ -15,44 +14,35 @@ namespace Concordance.Model
         /// Содержимое слова
         /// </summary>
         public string Content { get; }
+        
+        /// <summary>
+        /// Первая буква слова
+        /// </summary>
         public char FirstChar => Content[0];
-
+        
         public Word(string content)
         {
             Content = content;
         }
 
-        //public Word AddPage(int page)
-        //{
-        //    if (PageNumbers.FirstOrDefault(p => p == page) == default)
-        //        PageNumbers.Add(page);
+        public static IEnumerable<Word> Split(string plainText)
+        {
+            var separators = new[] { ',', ' ', '.', '(', ')', ':', ';', '-', '!', '?', '_', '—', '\r', '\n' };
+            var wordStrings = plainText.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-        //    return this;
-        //}
+            return wordStrings.Select(wordString => new Word(wordString.ToLower())).ToList();
+        }
 
         public int Compare(object? x, object? y)
         {
             var w1 = (Word) x;
             var w2 = (Word) y;
 
-            return string.Compare(w1?.Value, w2?.Value, StringComparison.CurrentCultureIgnoreCase);
+            return string.Compare(w1?.Content, w2?.Content, StringComparison.CurrentCultureIgnoreCase);
         }
         public int CompareTo(object? obj)
         {
             return Compare(this, obj);
         }
-
-        //public override string ToString()
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    sb.Append(Value)
-        //        .Append(new string('.', 60 - Value.Length))
-        //        .Append(Count)
-        //        .Append(" : ")
-        //        .Append(string.Join(' ', PageNumbers));
-
-        //    return sb.ToString();
-        //}
-    
     }
 }
