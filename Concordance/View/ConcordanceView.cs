@@ -13,7 +13,7 @@ namespace Concordance.View
     {
         private readonly ITextInfoParser _textInfoParser;
 
-        private IEnumerable<Text> _textList;
+        private ICollection<Text> _textList;
         private int _pageSize;
         private string _outputDirectory;
 
@@ -46,7 +46,7 @@ namespace Concordance.View
                     {
                         var reader = new TextFileReader(filePath, _pageSize);
                         var text = reader.Read();
-                        ((List<Text>)_textList).Add(text);
+                        _textList.Add(text);
                         ConsoleExtensions.WriteLineWithColor($"Текст {text.Name} добавлен в обработку.",
                             ConsoleColor.Green);
                     }
