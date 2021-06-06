@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Concordance.Model;
@@ -10,7 +8,7 @@ namespace Concordance.Report
     /// <summary>
     /// Элемент отчета
     /// </summary>
-    public class ConcordanceReportItem: IComparer, IComparable
+    public class ConcordanceReportItem
     {
         /// <summary>
         /// Слово
@@ -45,20 +43,7 @@ namespace Concordance.Report
 
             return this;
         }
-
-        public int Compare(object? x, object? y)
-        {
-            var cri1 = (ConcordanceReportItem) x;
-            var cri2 = (ConcordanceReportItem) y;
-
-            return cri1.Word.CompareTo(cri2.Word);
-        }
-
-        public int CompareTo(object? obj)
-        {
-            return Compare(this, obj);
-        }
-
+        
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

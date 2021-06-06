@@ -6,7 +6,7 @@ namespace Concordance.Interfaces
 {
     public interface IConcordanceReport
     {
-        IDictionary<char, ICollection<ConcordanceReportItem>> ReportList { get; }
+        IDictionary<Word, ConcordanceReportItem> ReportList { get; }
         Text Text { get; }
         void MakeReport();
         string ToString();

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Concordance.Interfaces;
 using Concordance.Model;
@@ -8,13 +7,13 @@ namespace Concordance.Report
 {
     public class ConcordanceReport : IConcordanceReport
     {
-        public IDictionary<char, ICollection<ConcordanceReportItem>> ReportList { get; }
+        public IDictionary<Word, ConcordanceReportItem> ReportList { get; }
         public Text Text { get; }
 
         public ConcordanceReport(Text text)
         {
             Text = text;
-            ReportList = new SortedList<char, ICollection<ConcordanceReportItem>>();
+            ReportList = new SortedList<Word, ConcordanceReportItem>();
         }
 
         public void MakeReport()
@@ -29,46 +28,34 @@ namespace Concordance.Report
         {
             foreach (var word in page.Words)
             {
-                var firstChar = word.FirstChar;
-                //Если нет буквы в списке, то добавляем букву и слово
-                if (!ReportList.ContainsKey(firstChar))
+                if (!ReportList.ContainsKey(word))
                 {
-                    ReportList.Add(firstChar, new List<ConcordanceReportItem>()
-                    {
-                        new ConcordanceReportItem(word).AddPage(page.Number)
-                    });
-                }
-                else
-                {
-                    var foundWord = ReportList[firstChar].FirstOrDefault(cri => cri.Word.CompareTo(word) == 0);
-                    //Если в списке есть уже слово, то добавляем страницу и увеличиваем количество встреч слова в тексте
-                    if (foundWord != null)
-                    {
-                        foundWord.AddPage(page.Number);
-                    }
-                    else
-                    {
-                        //Если слова нет, то добавляем новое слово
-                        ReportList[firstChar].Add(new ConcordanceReportItem(word).AddPage(page.Number));
-                    }
+                    ReportList.Add(word, new ConcordanceReportItem(word));
                 }
 
-                ((List<ConcordanceReportItem>)ReportList[firstChar]).Sort();
+                ReportList[word].AddPage(page.Number);
             }
         }
 
         public override string ToString()
         {
             var sb = new StringBuilder();
-            foreach (var key in ReportList.Keys)
+            char prevFirstChar = ' ';
+            
+            foreach (var item in ReportList.Values)
             {
-                sb.AppendLine(char.ToUpper(key).ToString());
-                foreach (var word in ReportList[key])
+                if (item.Word.FirstChar != prevFirstChar)
                 {
-                    sb.AppendLine(word.ToString());
+                    if (prevFirstChar != ' ')
+                    {
+                        sb.AppendLine();
+                    }
+
+                    prevFirstChar = item.Word.FirstChar;
+                    sb.AppendLine(char.ToUpper(prevFirstChar).ToString());
                 }
 
-                sb.AppendLine();
+                sb.AppendLine(item.ToString());
             }
 
             return sb.ToString();
