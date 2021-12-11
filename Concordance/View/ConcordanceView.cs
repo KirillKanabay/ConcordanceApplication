@@ -11,13 +11,13 @@ namespace Concordance.View
 {
     public class ConcordanceView
     {
-        private readonly ITextInfoParser _textInfoParser;
+        private readonly IConfigurationParser _textInfoParser;
 
         private ICollection<Text> _textList;
         private int _pageSize;
         private string _outputDirectory;
 
-        public ConcordanceView(ITextInfoParser textInfoParser)
+        public ConcordanceView(IConfigurationParser textInfoParser)
         {
             _textInfoParser = textInfoParser;
         }

@@ -4,10 +4,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace Concordance.Configurations
 {
-    public class ConfigurationTextInfoParser:ITextInfoParser
+    public class ConfigurationParser:IConfigurationParser
     {
         private readonly IConfiguration _configuration;
-        public ConfigurationTextInfoParser(IConfiguration configuration)
+        public ConfigurationParser(IConfiguration configuration)
         {
             _configuration = configuration;
         }

@@ -11,7 +11,7 @@ namespace Concordance
     class Program
     {
         private static IConfiguration _configuration;
-        private static ITextInfoParser _textInfoParser;
+        private static IConfigurationParser _textInfoParser;
         private static ConcordanceView _concordanceView;
         private static void GetConfigurations()
         {
@@ -23,7 +23,7 @@ namespace Concordance
         
         private static void InitDependencies()
         {
-            _textInfoParser = new ConfigurationTextInfoParser(_configuration);
+            _textInfoParser = new ConfigurationParser(_configuration);
             _concordanceView = new ConcordanceView(_textInfoParser);
         }
         

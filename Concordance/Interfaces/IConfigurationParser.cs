@@ -2,7 +2,7 @@
 
 namespace Concordance.Interfaces
 {
-    public interface ITextInfoParser
+    public interface IConfigurationParser
     {
         /// <summary>
         /// Получение путей к входным файлам
