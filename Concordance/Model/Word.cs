@@ -8,7 +8,7 @@ namespace Concordance.Model
     /// <summary>
     /// Класс слова
     /// </summary>
-    public class Word : IComparer, IComparable
+    public class Word
     {
         /// <summary>
         /// Содержимое слова
