@@ -1,9 +1,10 @@
 ﻿namespace Concordance.FSM
 {
-    public enum State
+    public enum ParseState
     {
+        Inactive,
         Letter,
-        Punctuation,
+        Separator,
         NewLine,
         EndOfFile,
     }

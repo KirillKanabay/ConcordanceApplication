@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Concordance.Configurations;
 using Concordance.Helpers;
 using Concordance.Interfaces;
+using Concordance.IO;
 using Concordance.View;
 using Microsoft.Extensions.Configuration;
 
@@ -29,20 +31,10 @@ namespace Concordance
         
          
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            try
-            {
-                GetConfigurations();
-            }
-            catch (Exception e)
-            {
-                ConsoleExtensions.WriteLineError($"Ошибка обработки файла конфигурации : {e.Message}");
-                return;
-            }
-            
-            InitDependencies();
-            _concordanceView.Show();
+            FileWordParser fwp = new FileWordParser("text.txt", 5);
+            await fwp.Parse();
         }
     }
 }

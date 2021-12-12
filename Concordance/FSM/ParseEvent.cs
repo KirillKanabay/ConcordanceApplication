@@ -2,6 +2,9 @@
 {
     public enum ParseEvent
     {
-        
+        ReadLetter,
+        ReadSeparator,
+        ReadNewLine,
+        EndOfFile
     }
 }
