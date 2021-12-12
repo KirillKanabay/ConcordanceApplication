@@ -48,7 +48,7 @@ namespace Concordance.Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(Word.Content)
+            sb.Append(Word.Content.ToLower())
                 .Append(new string('.', 60 - Word.Content.Length))
                 .Append(Count)
                 .Append(" : ")

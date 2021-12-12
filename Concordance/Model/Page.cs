@@ -17,7 +17,7 @@ namespace Concordance.Model
         /// <summary>
         /// Номер страницы
         /// </summary>
-        public int Number { get; }
+        public int Number { get; set; }
 
         public override string ToString()
         {

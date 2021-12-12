@@ -20,5 +20,10 @@ namespace Concordance.Model
             if (ReferenceEquals(null, this)) return -1;
             return string.Compare(this.Content, other.Content, StringComparison.CurrentCultureIgnoreCase);
         }
+
+        public override int GetHashCode()
+        {
+            return Content.ToLower().GetHashCode();
+        }
     }
 }

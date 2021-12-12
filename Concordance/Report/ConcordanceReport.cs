@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Concordance.Interfaces;
 using Concordance.Model;
@@ -24,23 +25,21 @@ namespace Concordance.Report
                 HandleWords(page);
             }
         }
-
+        
         private void HandleWords(Page page)
         {
-            foreach (var sentence in page.Sentences)
-            {
-                foreach (var sentenceEl in sentence.SentenceElements)
-                {
-                    if (sentenceEl is Word word)
-                    {
-                        if (!ReportList.ContainsKey(word))
-                        {
-                            ReportList.Add(word, new ConcordanceReportItem(word));
-                        }
+            var words = page.Sentences
+                .SelectMany(p => p.SentenceElements.Where(se => se is Word))
+                .Select(se => se as Word);
 
-                        ReportList[word].AddPage(page.Number);
-                    }
+            foreach (var word in words)
+            {
+                if (!ReportList.ContainsKey(word))
+                {
+                    ReportList.Add(word, new ConcordanceReportItem(word));
                 }
+
+                ReportList[word].AddPage(page.Number);
             }
         }
 
@@ -58,8 +57,8 @@ namespace Concordance.Report
                         sb.AppendLine();
                     }
 
-                    prevFirstChar = item.Word.FirstChar;
-                    sb.AppendLine(char.ToUpper(prevFirstChar).ToString());
+                    prevFirstChar = char.ToUpper(item.Word.FirstChar);
+                    sb.AppendLine(prevFirstChar.ToString());
                 }
 
                 sb.AppendLine(item.ToString());

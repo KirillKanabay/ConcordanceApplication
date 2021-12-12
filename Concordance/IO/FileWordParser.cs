@@ -100,8 +100,6 @@ namespace Concordance.IO
             {
                 AppendPage();
             }
-
-            _lineCount = 1;
         }
 
         private void AppendToCharBuffer()
@@ -151,7 +149,8 @@ namespace Concordance.IO
 
             Page page = new Page()
             {
-                Sentences = new List<Sentence>(_sentenceBuffer)
+                Sentences = new List<Sentence>(_sentenceBuffer),
+                Number = _lineCount / _pageSize,
             };
 
             _pagesBuffer.Add(page);

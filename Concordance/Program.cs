@@ -34,7 +34,7 @@ namespace Concordance
 
         static async Task Main(string[] args)
         {
-            FileWordParser fwp = new FileWordParser("text.txt", 5);
+            FileWordParser fwp = new FileWordParser("text.txt", 2);
             var parserResult = await fwp.Parse();
 
             if (!parserResult.IsSuccess)
