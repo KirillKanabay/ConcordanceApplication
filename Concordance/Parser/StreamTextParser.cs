@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,31 +12,31 @@ using Concordance.Model;
 
 namespace Concordance.IO
 {
-    public class FileWordParser : IWordParser
+    public class StreamTextParser : IWordParser, IDisposable
     {
-        private readonly string _path;
-        private readonly int _pageSize;
+        private readonly IEventGenerator _eventGenerator;
+        private readonly IFiniteStateMachineBuilder _fsmBuilder;
+        private IFiniteStateMachine _fsm;
 
-        private IEventGenerator _eventGenerator;
-        private IFiniteStateMachineBuilder _fsmBuilder;
-
-        private IList<Page> _pagesBuffer;
-        private IList<Sentence> _sentenceBuffer;
-        private IList<BaseSentenceElement> _sentenceElementsBuffer;
-        private IList<char> _charBuffer;
+        private readonly IList<Page> _pagesBuffer;
+        private readonly IList<Sentence> _sentenceBuffer;
+        private readonly IList<BaseSentenceElement> _sentenceElementsBuffer;
+        private readonly IList<char> _charBuffer;
 
         private char _lastReadChar;
         private int _lineCount = 1;
-        private IFiniteStateMachine _fsm;
-        
-        public FileWordParser(string path, int pageSize)
+
+        private readonly Stream _stream;
+        private readonly int _pageSize;
+
+        public StreamTextParser(Stream stream, int pageSize)
         {
-            _path = path;
+            _stream = stream;
             _pageSize = pageSize;
 
             _pagesBuffer = new List<Page>();
             _sentenceBuffer = new List<Sentence>();
-            _sentenceElementsBuffer= new List<BaseSentenceElement>();
+            _sentenceElementsBuffer = new List<BaseSentenceElement>();
             _charBuffer = new List<char>();
 
             _eventGenerator = new EventGenerator();
@@ -45,9 +46,52 @@ namespace Concordance.IO
             InitFSM();
         }
 
+        public async Task<ParserResult> Parse()
+        {
+            if (_pageSize < 0)
+            {
+                return new ParserResult()
+                {
+                    Error = "Page size can't be less than zero",
+                    IsSuccess = false,
+                };
+            }
+
+            if (_stream == null)
+            {
+                return new ParserResult()
+                {
+                    Error = "Stream can't be null",
+                    IsSuccess = false,
+                };
+            }
+
+            using (var sr = new StreamReader(_stream))
+            {
+                char[] buffer = new char[4096];
+                while (await sr.ReadAsync(buffer, 0, buffer.Length) != 0)
+                {
+                    foreach (var c in buffer)
+                    {
+                        Event parseEvent = _eventGenerator.Generate(c);
+                        _lastReadChar = c;
+                        _fsm.MoveNext(parseEvent);
+                    }
+                }
+
+                _fsm.MoveNext(Event.EndOfFile);
+            }
+
+            return new ParserResult()
+            {
+                IsSuccess = true,
+                Text = new Text() { Name = "test", Pages = _pagesBuffer }
+            };
+        }
+
+
         private void InitFSM()
         {
-            
             _fsmBuilder.From(State.Inactive).To(State.Letter).ByEvent(Event.ReadLetter)
                 .Action(AppendToCharBuffer);
 
@@ -71,7 +115,8 @@ namespace Concordance.IO
             _fsmBuilder.From(State.Separator).To(State.EndOfFile).ByEvent(Event.EndOfFile)
                 .Action(AppendPage);
 
-            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndSentenceSeparator).ByEvent(Event.ReadEndSentenceSeparator)
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndSentenceSeparator)
+                .ByEvent(Event.ReadEndSentenceSeparator)
                 .Action(AppendToCharBuffer);
             _fsmBuilder.From(State.EndSentenceSeparator).To(State.Letter).ByEvent(Event.ReadLetter)
                 .Action(AppendSentence);
@@ -106,22 +151,22 @@ namespace Concordance.IO
         {
             _charBuffer.Add(_lastReadChar);
         }
-        
+
         private void AppendWord()
         {
             string word = new string(_charBuffer.ToArray());
             Word wordInstance = new Word {Content = word};
             _sentenceElementsBuffer.Add(wordInstance);
-                
+
             _charBuffer.Clear();
-            
+
             AppendToCharBuffer();
         }
 
         private void AppendSeparator()
         {
             string separator = new string(_charBuffer.ToArray());
-            Separator separatorInstance = new Separator() { Content = separator };
+            Separator separatorInstance = new Separator() {Content = separator};
             _sentenceElementsBuffer.Add(separatorInstance);
 
             _charBuffer.Clear();
@@ -141,9 +186,7 @@ namespace Concordance.IO
             _sentenceElementsBuffer.Clear();
         }
 
-
-
-        public void AppendPage()
+        private void AppendPage()
         {
             AppendSentence();
 
@@ -160,49 +203,9 @@ namespace Concordance.IO
             _charBuffer.Clear();
         }
 
-        public async Task<ParserResult> Parse()
+        public void Dispose()
         {
-            //todo: Fluent validation
-            if (_pageSize < 0)
-            {
-                return new ParserResult()
-                {
-                    Error = "Page size can't be less than zero",
-                    IsSuccess = false,
-                };
-            }
-
-            if (!File.Exists(_path))
-            {
-                return new ParserResult()
-                {
-                    Error = "File doesn't exist",
-                    IsSuccess = false,
-                };
-            }
-
-            await using (var fs = new FileStream(_path, FileMode.Open, FileAccess.Read))
-            {
-                using (var sr = new StreamReader(fs))
-                {
-                    int nextCh;
-
-                    while ((nextCh = sr.Read()) != -1)
-                    {
-                        Event parseEvent = _eventGenerator.Generate((char)nextCh);
-                        _lastReadChar = (char) nextCh;
-                        _fsm.MoveNext(parseEvent);
-                    }
-
-                    _fsm.MoveNext(Event.EndOfFile);
-                }
-            }
-
-            return new ParserResult()
-            {
-                IsSuccess = true,
-                Text = new Text() {Name = "test", Pages = _pagesBuffer}
-            };
+            _stream?.Dispose();
         }
     }
 }
