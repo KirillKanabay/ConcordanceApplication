@@ -11,7 +11,7 @@ namespace Concordance.Comparers
             if (ReferenceEquals(x, y)) return 0;
             if (ReferenceEquals(null, y)) return 1;
             if (ReferenceEquals(null, x)) return -1;
-            return string.Compare(x.Content, y.Content, StringComparison.Ordinal);
+            return string.Compare(x.Content, y.Content, StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }
