@@ -7,12 +7,11 @@ using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.Events;
 using Concordance.FSM.States;
-using Concordance.Interfaces;
 using Concordance.Model;
 
-namespace Concordance.IO
+namespace Concordance.Parser
 {
-    public class StreamTextParser : IWordParser, IDisposable
+    public class StreamTextParser : ITextParser, IDisposable
     {
         private readonly IEventGenerator _eventGenerator;
         private readonly IFiniteStateMachineBuilder _fsmBuilder;

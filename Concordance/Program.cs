@@ -6,6 +6,7 @@ using Concordance.Helpers;
 using Concordance.Interfaces;
 using Concordance.IO;
 using Concordance.Model;
+using Concordance.Parser;
 using Concordance.Report;
 using Concordance.View;
 using Microsoft.Extensions.Configuration;

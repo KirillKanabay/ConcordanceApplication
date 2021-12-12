@@ -17,13 +17,12 @@ namespace Concordance.FSM
             _transitions = transitions;
         }
 
-        public void MoveNext(Event parseEvent)
+        public void MoveNext(Event @event)
         {
-            StateTransition transition = new StateTransition(CurrentState, parseEvent);
-            State nextState;
-            if (!_transitions.TryGetValue(transition, out nextState))
+            StateTransition transition = new StateTransition(CurrentState, @event);
+            if (!_transitions.TryGetValue(transition, out var nextState))
             {
-                throw new Exception($"Invalid transition: {CurrentState} -> {parseEvent}");
+                throw new Exception($"Invalid transition: {CurrentState} -> {@event}");
             }
 
             var action = _transitions.Keys.FirstOrDefault(k => k.Equals(transition))?.Action;
