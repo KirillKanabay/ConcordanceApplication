@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Concordance.Interfaces;
 using Concordance.Model;
@@ -26,16 +27,17 @@ namespace Concordance.Report
 
         private void HandleWords(Page page)
         {
-            foreach (var word in page.Words)
-            {
-                if (!ReportList.ContainsKey(word))
-                {
-                    ReportList.Add(word, new ConcordanceReportItem(word));
-                }
-
-                ReportList[word].AddPage(page.Number);
-            }
-        }
+        //     foreach (var word in page.Words)
+        //     {
+        //         if (!ReportList.ContainsKey(word))
+        //         {
+        //             ReportList.Add(word, new ConcordanceReportItem(word));
+        //         }
+        //
+        //         ReportList[word].AddPage(page.Number);
+        //     }
+        throw new NotImplementedException();
+    }
 
         public override string ToString()
         {

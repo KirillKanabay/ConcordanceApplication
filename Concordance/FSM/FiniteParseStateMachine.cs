@@ -21,7 +21,7 @@ namespace Concordance.FSM
             ParseState nextState;
             if (!_transitions.TryGetValue(transition, out nextState))
             {
-                throw new Exception("Invalid transition");
+                throw new Exception($"Invalid transition: {CurrentState} -> {parseEvent}");
             }
 
             var action = _transitions.Keys.FirstOrDefault(k => k.Equals(transition))?.Action;

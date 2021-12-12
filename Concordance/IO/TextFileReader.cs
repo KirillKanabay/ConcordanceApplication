@@ -21,9 +21,9 @@ namespace Concordance.IO
 
             var plainText = reader.ReadToEnd();
 
-            Text text = new Text(Path.GetFileNameWithoutExtension(_filePath), plainText, _pageSize);
+            //Text text = new Text(Path.GetFileNameWithoutExtension(_filePath), plainText, _pageSize);
 
-            return text;
+            return null;
         }
     }
 }

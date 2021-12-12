@@ -12,7 +12,7 @@ namespace Concordance.Model
         /// <summary>
         /// Слова страницы
         /// </summary>
-        public IEnumerable<Sentence> Sentences { get; }
+        public IEnumerable<Sentence> Sentences { get; set; }
         /// <summary>
         /// Номер страницы
         /// </summary>

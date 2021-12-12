@@ -4,6 +4,7 @@
     {
         ReadLetter,
         ReadSeparator,
+        ReadEndSentenceSeparator,
         ReadNewLine,
         EndOfFile
     }

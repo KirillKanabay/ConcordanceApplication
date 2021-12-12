@@ -5,6 +5,7 @@
         Inactive,
         Letter,
         Separator,
+        EndSentenceSeparator,
         NewLine,
         EndOfFile,
     }
