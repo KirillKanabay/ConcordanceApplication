@@ -52,12 +52,20 @@ namespace Concordance.FSM.Builder
         public IFiniteStateMachineBuilder Action(Action action)
         {
             _action = action;
-
-            StateTransition transition = new StateTransition(_from, _byEvent, _action);
-
-            _transitions.Add(transition, _to);
+            
+            AppendTransition();
 
             return this;
+        }
+
+        private void AppendTransition()
+        {
+            StateTransition transition = new StateTransition(_from, _byEvent, _action);
+
+            if (!_transitions.ContainsKey(transition))
+            {
+                _transitions.Add(transition, _to);
+            }
         }
     }
 }
