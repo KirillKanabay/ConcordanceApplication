@@ -2,6 +2,6 @@
 {
     public interface IParseEventGenerator
     {
-        ParseEvent Generate(int ch);
+        ParseEvent Generate(char ch);
     }
 }

@@ -6,25 +6,19 @@ namespace Concordance.FSM
     {
         private readonly char[] _endSentenceSeparators = {'.', '!', '?'};
 
-        public ParseEvent Generate(int ch)
+        public ParseEvent Generate(char ch)
         {
-            if (ch == -1)
-            {
-                return ParseEvent.EndOfFile;
-            }
-
             ParseEvent parseEvent;
-            char character = (char) ch;
 
-            if (_endSentenceSeparators.Contains(character))
+            if (_endSentenceSeparators.Contains(ch))
             {
                 parseEvent = ParseEvent.ReadEndSentenceSeparator;
             }
-            else if(character == '\n' || character =='\r')
+            else if(ch== '\n' || ch =='\r')
             {
                 parseEvent = ParseEvent.ReadNewLine;
             }
-            else if (char.IsLetterOrDigit(character))
+            else if (char.IsLetterOrDigit(ch) || ch == '\'')
             {
                 parseEvent = ParseEvent.ReadLetter;
             }
