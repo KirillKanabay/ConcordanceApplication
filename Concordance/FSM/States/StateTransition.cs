@@ -1,20 +1,21 @@
 ﻿using System;
+using Concordance.FSM.Events;
 
-namespace Concordance.FSM
+namespace Concordance.FSM.States
 {
     public class StateTransition
     {
-        public readonly ParseState CurrentState;
-        public readonly ParseEvent Event;
+        public readonly State CurrentState;
+        public readonly Event Event;
         public readonly Action Action;
 
-        public StateTransition(ParseState currentState, ParseEvent parseEvent)
+        public StateTransition(State currentState, Event parseEvent)
         {
             CurrentState = currentState;
             Event = parseEvent;
         }
         
-        public StateTransition(ParseState currentState, ParseEvent parseEvent, Action action)
+        public StateTransition(State currentState, Event parseEvent, Action action)
         {
             CurrentState = currentState;
             Event = parseEvent;

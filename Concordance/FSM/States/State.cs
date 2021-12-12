@@ -1,6 +1,6 @@
-﻿namespace Concordance.FSM
+﻿namespace Concordance.FSM.States
 {
-    public enum ParseState
+    public enum State
     {
         Inactive,
         Letter,

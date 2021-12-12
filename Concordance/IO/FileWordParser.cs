@@ -3,6 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Concordance.FSM;
+using Concordance.FSM.Builder;
+using Concordance.FSM.Events;
+using Concordance.FSM.States;
 using Concordance.Interfaces;
 using Concordance.Model;
 
@@ -13,7 +16,8 @@ namespace Concordance.IO
         private readonly string _path;
         private readonly int _pageSize;
 
-        private IParseEventGenerator _eventGenerator;
+        private IEventGenerator _eventGenerator;
+        private IFiniteStateMachineBuilder _fsmBuilder;
 
         private IList<Page> _pagesBuffer;
         private IList<Sentence> _sentenceBuffer;
@@ -22,7 +26,7 @@ namespace Concordance.IO
 
         private char _lastReadChar;
         private int _lineCount;
-        private FiniteParseStateMachine _fsm;
+        private IFiniteStateMachine _fsm;
         
         public FileWordParser(string path, int pageSize)
         {
@@ -34,36 +38,21 @@ namespace Concordance.IO
             _sentenceElementsBuffer= new List<BaseSentenceElement>();
             _charBuffer = new List<char>();
 
-            _eventGenerator = new ParseEventGenerator();
+            _eventGenerator = new EventGenerator();
+
+            _fsmBuilder = new FiniteStateMachineBuilder();
 
             InitFSM();
         }
 
         private void InitFSM()
         {
-            Dictionary<StateTransition, ParseState> transitions = new Dictionary<StateTransition, ParseState>()
-            {
-                {new StateTransition(ParseState.Inactive, ParseEvent.ReadLetter, AppendToCharBuffer), ParseState.Letter},
-                
-                {new StateTransition(ParseState.Letter, ParseEvent.ReadLetter, AppendToCharBuffer), ParseState.Letter},
-                {new StateTransition(ParseState.Letter, ParseEvent.ReadSeparator, AppendWord), ParseState.Separator},
-                {new StateTransition(ParseState.Letter, ParseEvent.ReadNewLine, IncLineCount), ParseState.NewLine},
-                {new StateTransition(ParseState.Letter, ParseEvent.ReadEndSentenceSeparator, AppendWord), ParseState.EndSentenceSeparator},
+           
 
-                {new StateTransition(ParseState.Separator, ParseEvent.ReadSeparator, AppendToCharBuffer), ParseState.Separator},
-                {new StateTransition(ParseState.Separator, ParseEvent.ReadLetter, AppendSeparator), ParseState.Letter},
-                {new StateTransition(ParseState.Separator, ParseEvent.ReadNewLine, IncLineCount), ParseState.NewLine},
-                
-                {new StateTransition(ParseState.EndSentenceSeparator, ParseEvent.ReadEndSentenceSeparator, AppendToCharBuffer), ParseState.EndSentenceSeparator},
-                {new StateTransition(ParseState.EndSentenceSeparator, ParseEvent.ReadLetter, AppendSentence), ParseState.Letter},
-                {new StateTransition(ParseState.EndSentenceSeparator, ParseEvent.ReadSeparator, AppendSentence), ParseState.Separator},
-                {new StateTransition(ParseState.EndSentenceSeparator, ParseEvent.ReadNewLine, AppendSentence), ParseState.NewLine},
-                {new StateTransition(ParseState.EndSentenceSeparator, ParseEvent.EndOfFile, AppendPage), ParseState.EndOfFile},
-                
-                {new StateTransition(ParseState.NewLine, ParseEvent.ReadLetter, AppendSeparator), ParseState.Letter},
-                {new StateTransition(ParseState.NewLine, ParseEvent.ReadNewLine, AppendToCharBuffer), ParseState.NewLine},
-                {new StateTransition(ParseState.NewLine, ParseEvent.ReadSeparator, AppendSeparator), ParseState.Separator}
-            };
+            _fsmBuilder.From(State.Inactive).To(State.Letter).ByEvent(Event.ReadLetter)
+                .Action(AppendToCharBuffer);
+
+            _fsmBuilder.From(State.Letter)
 
             _fsm = new FiniteParseStateMachine(transitions);
         }
@@ -166,12 +155,12 @@ namespace Concordance.IO
 
                     while ((nextCh = sr.Read()) != -1)
                     {
-                        ParseEvent parseEvent = _eventGenerator.Generate((char)nextCh);
+                        Event parseEvent = _eventGenerator.Generate((char)nextCh);
                         _lastReadChar = (char) nextCh;
                         _fsm.MoveNext(parseEvent);
                     }
 
-                    _fsm.MoveNext(ParseEvent.EndOfFile);
+                    _fsm.MoveNext(Event.EndOfFile);
                 }
             }
 

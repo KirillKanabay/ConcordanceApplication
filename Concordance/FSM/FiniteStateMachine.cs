@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Concordance.FSM.Events;
+using Concordance.FSM.States;
 
 namespace Concordance.FSM
 {
-    public class FiniteParseStateMachine
+    public class FiniteStateMachine : IFiniteStateMachine
     {
-        private readonly IDictionary<StateTransition, ParseState> _transitions;
-        public ParseState CurrentState { get; private set; }
+        private readonly IDictionary<StateTransition, State> _transitions;
+        public State CurrentState { get; private set; }
 
-        public FiniteParseStateMachine(IDictionary<StateTransition, ParseState> transitions)
+        public FiniteStateMachine(IDictionary<StateTransition, State> transitions)
         {
-            CurrentState = ParseState.Inactive;
+            CurrentState = State.Inactive;
             _transitions = transitions;
         }
 
-        public void MoveNext(ParseEvent parseEvent)
+        public void MoveNext(Event parseEvent)
         {
             StateTransition transition = new StateTransition(CurrentState, parseEvent);
-            ParseState nextState;
+            State nextState;
             if (!_transitions.TryGetValue(transition, out nextState))
             {
                 throw new Exception($"Invalid transition: {CurrentState} -> {parseEvent}");

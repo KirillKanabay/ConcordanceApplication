@@ -1,6 +1,6 @@
-﻿namespace Concordance.FSM
+﻿namespace Concordance.FSM.Events
 {
-    public enum ParseEvent
+    public enum Event
     {
         ReadLetter,
         ReadSeparator,

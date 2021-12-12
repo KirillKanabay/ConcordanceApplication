@@ -1,30 +1,30 @@
 ﻿using System.Linq;
 
-namespace Concordance.FSM
+namespace Concordance.FSM.Events
 {
-    public class ParseEventGenerator : IParseEventGenerator
+    public class EventGenerator : IEventGenerator
     {
         private readonly char[] _endSentenceSeparators = {'.', '!', '?'};
 
-        public ParseEvent Generate(char ch)
+        public Event Generate(char ch)
         {
-            ParseEvent parseEvent;
+            Event parseEvent;
 
             if (_endSentenceSeparators.Contains(ch))
             {
-                parseEvent = ParseEvent.ReadEndSentenceSeparator;
+                parseEvent = Event.ReadEndSentenceSeparator;
             }
             else if(ch== '\n' || ch =='\r')
             {
-                parseEvent = ParseEvent.ReadNewLine;
+                parseEvent = Event.ReadNewLine;
             }
             else if (char.IsLetterOrDigit(ch) || ch == '\'')
             {
-                parseEvent = ParseEvent.ReadLetter;
+                parseEvent = Event.ReadLetter;
             }
             else
             {
-                parseEvent = ParseEvent.ReadSeparator;
+                parseEvent = Event.ReadSeparator;
             }
 
             return parseEvent;
