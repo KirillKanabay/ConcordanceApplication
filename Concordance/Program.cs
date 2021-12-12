@@ -5,6 +5,7 @@ using Concordance.Configurations;
 using Concordance.Helpers;
 using Concordance.Interfaces;
 using Concordance.IO;
+using Concordance.Report;
 using Concordance.View;
 using Microsoft.Extensions.Configuration;
 
@@ -34,7 +35,17 @@ namespace Concordance
         static async Task Main(string[] args)
         {
             FileWordParser fwp = new FileWordParser("text.txt", 5);
-            await fwp.Parse();
+            var parserResult = await fwp.Parse();
+
+            if (!parserResult.IsSuccess)
+            {
+                ConsoleExtensions.WriteLineError(parserResult.Error);
+            }
+
+            var report = new ConcordanceReport(parserResult.Text);
+            report.MakeReport();
+
+            Console.WriteLine(report);
         }
     }
 }

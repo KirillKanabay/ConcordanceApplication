@@ -27,26 +27,31 @@ namespace Concordance.Report
 
         private void HandleWords(Page page)
         {
-        //     foreach (var word in page.Words)
-        //     {
-        //         if (!ReportList.ContainsKey(word))
-        //         {
-        //             ReportList.Add(word, new ConcordanceReportItem(word));
-        //         }
-        //
-        //         ReportList[word].AddPage(page.Number);
-        //     }
-        throw new NotImplementedException();
-    }
+            foreach (var sentence in page.Sentences)
+            {
+                foreach (var sentenceEl in sentence.SentenceElements)
+                {
+                    if (sentenceEl is Word word)
+                    {
+                        if (!ReportList.ContainsKey(word))
+                        {
+                            ReportList.Add(word, new ConcordanceReportItem(word));
+                        }
+
+                        ReportList[word].AddPage(page.Number);
+                    }
+                }
+            }
+        }
 
         public override string ToString()
         {
             var sb = new StringBuilder();
             char prevFirstChar = ' ';
-            
+
             foreach (var item in ReportList.Values)
             {
-                if (item.Word.FirstChar != prevFirstChar)
+                if (char.ToUpper(item.Word.FirstChar) != prevFirstChar)
                 {
                     if (prevFirstChar != ' ')
                     {

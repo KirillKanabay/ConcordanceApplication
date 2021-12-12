@@ -25,7 +25,7 @@ namespace Concordance.IO
         private IList<char> _charBuffer;
 
         private char _lastReadChar;
-        private int _lineCount;
+        private int _lineCount = 1;
         private IFiniteStateMachine _fsm;
         
         public FileWordParser(string path, int pageSize)
@@ -66,6 +66,10 @@ namespace Concordance.IO
                 .Action(AppendSeparator);
             _fsmBuilder.From(State.Separator).To(State.NewLine).ByEvent(Event.ReadNewLine)
                 .Action(IncLineCount);
+            _fsmBuilder.From(State.Separator).To(State.EndSentenceSeparator).ByEvent(Event.ReadEndSentenceSeparator)
+                .Action(AppendSeparator);
+            _fsmBuilder.From(State.Separator).To(State.EndOfFile).ByEvent(Event.EndOfFile)
+                .Action(AppendPage);
 
             _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndSentenceSeparator).ByEvent(Event.ReadEndSentenceSeparator)
                 .Action(AppendToCharBuffer);
@@ -97,7 +101,7 @@ namespace Concordance.IO
                 AppendPage();
             }
 
-            _lineCount = 0;
+            _lineCount = 1;
         }
 
         private void AppendToCharBuffer()

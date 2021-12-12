@@ -36,8 +36,10 @@ namespace Concordance.Model
         public ConcordanceReportItem AddPage(int pageNumber)
         {
             if (PageNumbers.FirstOrDefault(p => p == pageNumber) == default)
+            {
                 PageNumbers.Add(pageNumber);
-            
+            }
+
             Count++;
 
             return this;
