@@ -47,14 +47,45 @@ namespace Concordance.IO
 
         private void InitFSM()
         {
-           
-
+            
             _fsmBuilder.From(State.Inactive).To(State.Letter).ByEvent(Event.ReadLetter)
                 .Action(AppendToCharBuffer);
 
-            _fsmBuilder.From(State.Letter)
+            _fsmBuilder.From(State.Letter).To(State.Letter).ByEvent(Event.ReadLetter)
+                .Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.Letter).To(State.Separator).ByEvent(Event.ReadSeparator)
+                .Action(AppendWord);
+            _fsmBuilder.From(State.Letter).To(State.NewLine).ByEvent(Event.ReadNewLine)
+                .Action(IncLineCount);
+            _fsmBuilder.From(State.Letter).To(State.EndSentenceSeparator).ByEvent(Event.ReadEndSentenceSeparator)
+                .Action(AppendWord);
 
-            _fsm = new FiniteParseStateMachine(transitions);
+            _fsmBuilder.From(State.Separator).To(State.Separator).ByEvent(Event.ReadSeparator)
+                .Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.Separator).To(State.Letter).ByEvent(Event.ReadLetter)
+                .Action(AppendSeparator);
+            _fsmBuilder.From(State.Separator).To(State.NewLine).ByEvent(Event.ReadNewLine)
+                .Action(IncLineCount);
+
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndSentenceSeparator).ByEvent(Event.ReadEndSentenceSeparator)
+                .Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.Letter).ByEvent(Event.ReadLetter)
+                .Action(AppendSentence);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.Separator).ByEvent(Event.ReadSeparator)
+                .Action(AppendSentence);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.NewLine).ByEvent(Event.ReadNewLine)
+                .Action(AppendSentence);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndOfFile).ByEvent(Event.EndOfFile)
+                .Action(AppendPage);
+
+            _fsmBuilder.From(State.NewLine).To(State.Letter).ByEvent(Event.ReadLetter)
+                .Action(AppendSeparator);
+            _fsmBuilder.From(State.NewLine).To(State.NewLine).ByEvent(Event.ReadNewLine)
+                .Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.NewLine).To(State.Separator).ByEvent(Event.ReadSeparator)
+                .Action(AppendSeparator);
+
+            _fsm = _fsmBuilder.Build();
         }
 
         private void IncLineCount()

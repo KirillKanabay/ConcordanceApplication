@@ -15,10 +15,8 @@ namespace Concordance.FSM.States
             Event = parseEvent;
         }
         
-        public StateTransition(State currentState, Event parseEvent, Action action)
+        public StateTransition(State currentState, Event parseEvent, Action action) : this(currentState, parseEvent)
         {
-            CurrentState = currentState;
-            Event = parseEvent;
             Action = action;
         }
         
