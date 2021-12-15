@@ -1,8 +1,8 @@
 ﻿using Concordance.Model.Options;
 
-namespace Concordance.Configurations
+namespace Concordance.Services.Configurations
 {
-    public interface IConfigurationParser
+    public interface IConfigurationParserService
     {
         TextOptions GetTextOptions();
         string GetOutputDirectory();

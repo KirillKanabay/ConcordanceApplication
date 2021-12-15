@@ -1,11 +1,11 @@
 ﻿using System.IO;
-using Concordance.Configurations;
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
 using Concordance.Model.Options;
-using Concordance.Parser;
 using Concordance.Services.Concordance;
+using Concordance.Services.Configurations;
+using Concordance.Services.Parser;
 using Concordance.Validation;
 using Concordance.View;
 using FluentValidation;
@@ -21,13 +21,13 @@ namespace Concordance
             var serviceCollection = new ServiceCollection();
 
             serviceCollection.AddSingleton(GetConfiguration());
-            serviceCollection.AddSingleton<IConfigurationParser, ConfigurationParser>();
+            serviceCollection.AddSingleton<IConfigurationParserService, ConfigurationParserService>();
             
             serviceCollection.AddTransient<EntryPoint>();
 
             serviceCollection.AddScoped<IValidator<TextOptions>, TextOptionsValidator>();
 
-            serviceCollection.AddScoped<ITextParser, TextParser>();
+            serviceCollection.AddScoped<ITextParserService, TextParserService>();
             
             serviceCollection.AddTransient<IView, ConcordanceView>();
 

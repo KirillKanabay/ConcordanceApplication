@@ -1,12 +1,12 @@
 ﻿using Concordance.Model.Options;
 using Microsoft.Extensions.Configuration;
 
-namespace Concordance.Configurations
+namespace Concordance.Services.Configurations
 {
-    public class ConfigurationParser:IConfigurationParser
+    public class ConfigurationParserService:IConfigurationParserService
     {
         private readonly IConfiguration _configuration;
-        public ConfigurationParser(IConfiguration configuration)
+        public ConfigurationParserService(IConfiguration configuration)
         {
             _configuration = configuration;
         }

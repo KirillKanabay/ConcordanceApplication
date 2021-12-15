@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
@@ -12,9 +11,9 @@ using Concordance.Model.TextElements;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace Concordance.Parser
+namespace Concordance.Services.Parser
 {
-    public class TextParser : ITextParser
+    public class TextParserService : ITextParserService
     {
         private readonly IStateGenerator _stateGenerator;
         private readonly IFiniteStateMachineBuilder _fsmBuilder;
@@ -31,7 +30,7 @@ namespace Concordance.Parser
         private char _lastReadChar;
         private int _lineCount = 1;
 
-        public TextParser(IStateGenerator stateGenerator, 
+        public TextParserService(IStateGenerator stateGenerator, 
             IFiniteStateMachineBuilder fsmBuilder,
             IValidator<TextOptions> textOptionsValidator)
         {

@@ -1,18 +1,18 @@
 ﻿using System;
-using Concordance.Configurations;
 using Concordance.Helpers;
 using Concordance.Model;
 using Concordance.Model.Options;
 using Concordance.Model.TextElements;
-using Concordance.Parser;
+using Concordance.Services.Configurations;
+using Concordance.Services.Parser;
 
 namespace Concordance.View
 {
     public class ConcordanceView : IView
     {
-        private readonly IConfigurationParser _configParser;
-        private readonly ITextParser _textParser;
-        public ConcordanceView(IConfigurationParser textInfoParser, ITextParser textParser)
+        private readonly IConfigurationParserService _configParser;
+        private readonly ITextParserService _textParser;
+        public ConcordanceView(IConfigurationParserService textInfoParser, ITextParserService textParser)
         {
             _configParser = textInfoParser;
             _textParser = textParser;

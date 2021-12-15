@@ -1,9 +1,9 @@
 ﻿using Concordance.Model;
 using Concordance.Model.Options;
 
-namespace Concordance.Parser
+namespace Concordance.Services.Parser
 {
-    public interface ITextParser
+    public interface ITextParserService
     {
         ParserResult Parse(TextOptions options);
     }
