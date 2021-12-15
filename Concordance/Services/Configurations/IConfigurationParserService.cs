@@ -5,6 +5,5 @@ namespace Concordance.Services.Configurations
     public interface IConfigurationParserService
     {
         TextOptions GetTextOptions();
-        string GetOutputDirectory();
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
+using Concordance.Helpers.Logger;
 using Concordance.Model;
 using Concordance.Model.Options;
 using Concordance.Model.TextElements;
@@ -19,6 +20,7 @@ namespace Concordance.Services.Parser
         private readonly IFiniteStateMachineBuilder _fsmBuilder;
         private readonly IFiniteStateMachine _fsm;
         private readonly IValidator<TextOptions> _textOptionsValidator;
+        private readonly ILogger _logger;
 
         private readonly IList<Page> _pagesBuffer;
         private readonly IList<Sentence> _sentenceBuffer;
@@ -32,8 +34,10 @@ namespace Concordance.Services.Parser
 
         public TextParserService(IStateGenerator stateGenerator, 
             IFiniteStateMachineBuilder fsmBuilder,
-            IValidator<TextOptions> textOptionsValidator)
+            IValidator<TextOptions> textOptionsValidator,
+            ILogger logger)
         {
+            _logger = logger;
             _stateGenerator = stateGenerator;
             _fsmBuilder = fsmBuilder;
             _textOptionsValidator = textOptionsValidator;
