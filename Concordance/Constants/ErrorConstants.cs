@@ -14,13 +14,17 @@
         public const string TextForReportingIsNull 
             = "The process cannot create report, because text is null!";
 
-        public const string TextPathNotExists = 
-            "Text path not exists!";
+        public const string TextPathNotExists 
+            = "Text path not exists!";
 
-        public const string PageSizeLessThanZero = 
-            "Page size must be more 0!";
+        public const string PageSizeLessThanZero
+            = "Page size must be more 0!";
 
-        public const string TextOptionsSectionNotExists = 
-            "Cannot find \"TextOptions\" section in config file.";
+        public const string TextOptionsSectionNotExists 
+            = "Cannot find \"TextOptions\" section in config file!";
+
+        public const string TextOptionsForParsingTextIsNull
+            = "The process cannot parse text, because text options is null!";
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Concordance.Constants;
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
@@ -52,11 +53,15 @@ namespace Concordance.Services.Parser
 
         public ServiceResult<Text> Parse(TextOptions options)
         {
+            _logger.Information(InfoConstants.StartParsingText);
+
             if (options == null)
             {
+                _logger.Error(ErrorConstants.TextOptionsForParsingTextIsNull);
+
                 return new ServiceResult<Text>()
                 {
-                    Error = "Text options can't be null",
+                    Error = ErrorConstants.TextOptionsForParsingTextIsNull,
                     IsSuccess = false,
                 };
             }
@@ -65,6 +70,12 @@ namespace Concordance.Services.Parser
 
             if (!validationResult.IsValid)
             {
+
+                foreach (var error in validationResult.Errors)
+                {
+                    _logger.Error(error.ErrorMessage);
+                }
+
                 return new ServiceResult<Text>()
                 {
                     Error = validationResult.ToString("\n"),
@@ -74,21 +85,31 @@ namespace Concordance.Services.Parser
 
             _options = options;
 
-            using (var sr = new StreamReader(options.Path))
+            try
             {
-                char[] buffer = new char[4096];
-                while (sr.Read(buffer, 0, buffer.Length) != 0)
+                using (var sr = new StreamReader(options.Path))
                 {
-                    foreach (var c in buffer)
+                    char[] buffer = new char[4096];
+                    while (sr.Read(buffer, 0, buffer.Length) != 0)
                     {
-                        State nextState = _stateGenerator.Generate(c);
-                        _lastReadChar = c;
-                        _fsm.MoveNext(nextState);
+                        foreach (var c in buffer)
+                        {
+                            State nextState = _stateGenerator.Generate(c);
+                            _lastReadChar = c;
+                            _fsm.MoveNext(nextState);
+                        }
                     }
-                }
 
-                _fsm.MoveNext(State.EndOfFile);
+                    _fsm.MoveNext(State.EndOfFile);
+                }
             }
+            catch (IOException)
+            {
+                _logger.Error($"File {options.Path} doesn't exists or being used by another process");
+            }
+            
+
+            _logger.Information(InfoConstants.EndParsingText);
 
             var result = new ServiceResult<Text>()
             {

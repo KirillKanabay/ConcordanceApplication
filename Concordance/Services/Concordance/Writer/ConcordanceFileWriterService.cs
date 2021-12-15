@@ -57,12 +57,12 @@ namespace Concordance.Services.Concordance.Writer
             }
             catch (IOException)
             {
-                _logger.Error("File doesn't exists or being used by another process");
+                _logger.Error($"File {fileName} doesn't exists or being used by another process");
 
                 return new ServiceResult()
                 {
                     IsSuccess = false,
-                    Error = "File doesn't exists or being used by another process",
+                    Error = $"File {fileName} doesn't exists or being used by another process",
                 };
             }
 
