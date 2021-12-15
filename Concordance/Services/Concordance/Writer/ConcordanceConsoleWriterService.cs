@@ -19,11 +19,11 @@ namespace Concordance.Services.Concordance.Writer
 
             if (report == null)
             {
-                _logger.Error(ErrorConstants.ConcordanceReportIsNull);
+                _logger.Error(ErrorConstants.ConcordanceReportForWritingIsNull);
                 return new ServiceResult()
                 {
                     IsSuccess = false,
-                    Error = ErrorConstants.ConcordanceReportIsNull,
+                    Error = ErrorConstants.ConcordanceReportForWritingIsNull,
                 };
             }
 

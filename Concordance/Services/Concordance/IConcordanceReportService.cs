@@ -5,6 +5,6 @@ namespace Concordance.Services.Concordance
 {
     public interface IConcordanceReportService
     {
-       ConcordanceReport Create(Text text);
+       ServiceResult<ConcordanceReport> Create(Text text);
     }
 }

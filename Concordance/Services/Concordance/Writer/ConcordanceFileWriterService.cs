@@ -28,7 +28,7 @@ namespace Concordance.Services.Concordance.Writer
             string fileName = $"{_directory}/{report.TextName}_ConcordanceReport.txt";
 
             _logger.Information($"Start writing concordance report in file: {fileName}");
-
+            //todo: check report to null
             try
             {
                 using (var fs = new FileStream($"", FileMode.OpenOrCreate))

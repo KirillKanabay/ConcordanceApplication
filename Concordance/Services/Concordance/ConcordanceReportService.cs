@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Concordance.Constants;
+using Concordance.Helpers.Logger;
 using Concordance.Model;
 using Concordance.Model.TextElements;
 
@@ -7,9 +9,27 @@ namespace Concordance.Services.Concordance
 {
     public class ConcordanceReportService : IConcordanceReportService
     {
-        public ConcordanceReport Create(Text text)
+        private readonly ILogger _logger;
+        public ConcordanceReportService(ILogger logger)
         {
-            var report = new SortedList<Word, ConcordanceReportItem>();
+            _logger = logger;
+        }
+
+        public ServiceResult<ConcordanceReport> Create(Text text)
+        {
+            _logger.Information(InfoConstants.StartCreatingReport);
+
+            if (text == null)
+            {
+                _logger.Error(ErrorConstants.TextForReportingIsNull);
+                return new ServiceResult<ConcordanceReport>()
+                {
+                    IsSuccess = false,
+                    Error = ErrorConstants.TextForReportingIsNull,
+                };
+            }
+
+            var reportList = new SortedList<Word, ConcordanceReportItem>();
 
             foreach (var page in text.Pages)
             {
@@ -19,19 +39,27 @@ namespace Concordance.Services.Concordance
 
                 foreach (var word in words)
                 {
-                    if (!report.ContainsKey(word))
+                    if (!reportList.ContainsKey(word))
                     {
-                        report.Add(word, new ConcordanceReportItem(word));
+                        reportList.Add(word, new ConcordanceReportItem(word));
                     }
 
-                    report[word].AddPage(page.Number);
+                    reportList[word].AddPage(page.Number);
                 }
             }
 
-            return new ConcordanceReport()
+            var report = new ConcordanceReport()
             {
                 TextName = text.Name,
-                Items = report.Values
+                Items = reportList.Values
+            };
+
+            _logger.Information(InfoConstants.EndCreatingReport);
+
+            return new ServiceResult<ConcordanceReport>()
+            {
+                IsSuccess = true,
+                Data = report,
             };
         }
     }

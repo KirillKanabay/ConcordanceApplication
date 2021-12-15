@@ -44,7 +44,7 @@ namespace Concordance
             }
 
             var report = _concordanceReportService.Create(parserTextResult.Data);
-            _concordanceWriter.Write(report);
+            _concordanceWriter.Write(report.Data);
 
         }
     }
