@@ -1,10 +1,11 @@
 ﻿using Concordance.Model;
 using Concordance.Model.Options;
+using Concordance.Model.TextElements;
 
 namespace Concordance.Services.Parser
 {
     public interface ITextParserService
     {
-        ParserResult Parse(TextOptions options);
+        ServiceResult<Text> Parse(TextOptions options);
     }
 }

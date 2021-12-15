@@ -1,6 +1,6 @@
 ﻿namespace Concordance.Helpers.Logger
 {
-    internal interface ILogger
+    public interface ILogger
     {
         void Information(string message);
         void Error(string message);

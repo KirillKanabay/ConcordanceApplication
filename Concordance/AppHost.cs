@@ -43,7 +43,7 @@ namespace Concordance
                 return;
             }
 
-            var report = _concordanceReportService.Create(parserTextResult.Text);
+            var report = _concordanceReportService.Create(parserTextResult.Data);
             _concordanceWriter.Write(report);
 
         }

@@ -46,11 +46,11 @@ namespace Concordance.Services.Parser
             
         }
 
-        public ParserResult Parse(TextOptions options)
+        public ServiceResult<Text> Parse(TextOptions options)
         {
             if (options == null)
             {
-                return new ParserResult()
+                return new ServiceResult<Text>()
                 {
                     Error = "Text options can't be null",
                     IsSuccess = false,
@@ -61,7 +61,7 @@ namespace Concordance.Services.Parser
 
             if (!validationResult.IsValid)
             {
-                return new ParserResult()
+                return new ServiceResult<Text>()
                 {
                     Error = validationResult.ToString("\n"),
                     IsSuccess = false,
@@ -86,10 +86,10 @@ namespace Concordance.Services.Parser
                 _fsm.MoveNext(State.EndOfFile);
             }
 
-            var result = new ParserResult()
+            var result = new ServiceResult<Text>()
             {
                 IsSuccess = true,
-                Text = new Text()
+                Data = new Text()
                 {
                     Name = options.Name,
                     Pages = new List<Page>(_pagesBuffer)
