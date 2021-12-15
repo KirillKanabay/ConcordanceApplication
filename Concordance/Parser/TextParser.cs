@@ -8,6 +8,8 @@ using Concordance.FSM.Builder;
 using Concordance.FSM.States;
 using Concordance.Model;
 using Concordance.Model.Options;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace Concordance.Parser
 {
@@ -16,6 +18,7 @@ namespace Concordance.Parser
         private readonly IStateGenerator _stateGenerator;
         private readonly IFiniteStateMachineBuilder _fsmBuilder;
         private readonly IFiniteStateMachine _fsm;
+        private readonly IValidator<TextOptions> _textOptionsValidator;
 
         private readonly IList<Page> _pagesBuffer;
         private readonly IList<Sentence> _sentenceBuffer;
@@ -27,10 +30,13 @@ namespace Concordance.Parser
         private char _lastReadChar;
         private int _lineCount = 1;
 
-        public TextParser(IStateGenerator stateGenerator, IFiniteStateMachineBuilder fsmBuilder)
+        public TextParser(IStateGenerator stateGenerator, 
+            IFiniteStateMachineBuilder fsmBuilder,
+            IValidator<TextOptions> textOptionsValidator)
         {
             _stateGenerator = stateGenerator;
             _fsmBuilder = fsmBuilder;
+            _textOptionsValidator = textOptionsValidator;
             _fsm = InitFSM();
 
             _pagesBuffer = new List<Page>();
@@ -47,6 +53,17 @@ namespace Concordance.Parser
                 return new ParserResult()
                 {
                     Error = "Text options can't be null",
+                    IsSuccess = false,
+                };
+            }
+
+            ValidationResult result = _textOptionsValidator.Validate(options);
+
+            if (!result.IsValid)
+            {
+                return new ParserResult()
+                {
+                    Error = result.ToString("\n"),
                     IsSuccess = false,
                 };
             }

@@ -62,7 +62,7 @@ namespace Concordance.View
         {
             ConsoleExtensions.WriteLineWithColor(
                 "Настройки обрабатываемого текста находятся в appsettings.json, убедитесь в правильности заполнения!",
-                ConsoleColor.Red);
+                ConsoleColor.DarkYellow);
 
             Console.WriteLine();
 
