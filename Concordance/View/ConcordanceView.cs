@@ -1,5 +1,4 @@
 ﻿using System;
-using Concordance.Concordance;
 using Concordance.Configurations;
 using Concordance.Helpers;
 using Concordance.Model.Options;
@@ -7,7 +6,7 @@ using Concordance.Parser;
 
 namespace Concordance.View
 {
-    public class ConcordanceView
+    public class ConcordanceView : IView
     {
         private readonly IConfigurationParser _configParser;
         private readonly ITextParser _textParser;

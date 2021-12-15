@@ -8,6 +8,7 @@ using Concordance.Model;
 using Concordance.Parser;
 using Concordance.View;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Concordance
 {
@@ -34,7 +35,10 @@ namespace Concordance
 
         static void Main(string[] args)
         {
-            _concordanceView.Show();
+            var services = Startup.ConfigureServices();
+            var serviceProvider = services.BuildServiceProvider();
+
+            serviceProvider.GetService<EntryPoint>()?.Run();
         }
     }
 }
