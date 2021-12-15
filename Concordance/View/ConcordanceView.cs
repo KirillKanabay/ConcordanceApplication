@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Concordance.Concordance;
+using Concordance.Configurations;
 using Concordance.Helpers;
-using Concordance.Interfaces;
 using Concordance.Model;
 
 namespace Concordance.View
@@ -109,17 +109,19 @@ namespace Concordance.View
             return null;
         }
 
-        private void GetPageSize()
+        private int GetPageSize()
         {
             try
             {
-                _pageSize = _textInfoParser.GetPageSize();
+                return _textInfoParser.GetPageSize();
             }
             catch (Exception e)
             {
                 ConsoleExtensions.WriteLineError($"Не удалось извлечь размер страницы: {e.Message}");
                 Environment.Exit(0);
             }
+
+            return -1;
         }
 
         private void GetOutputDirectory()

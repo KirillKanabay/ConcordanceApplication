@@ -1,23 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Concordance.Model.Options;
 
-namespace Concordance.Interfaces
+namespace Concordance.Configurations
 {
     public interface IConfigurationParser
     {
-        /// <summary>
-        /// Получение путей к входным файлам
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<string> GetInputFilePaths();
-        /// <summary>
-        /// Получение пути к директории с результатами обработки
-        /// </summary>
-        /// <returns></returns>
+        TextOptions GetTextOptions();
         string GetOutputDirectory();
-        /// <summary>
-        /// Получения размера страницы в строках
-        /// </summary>
-        /// <returns></returns>
-        int GetPageSize();
     }
 }

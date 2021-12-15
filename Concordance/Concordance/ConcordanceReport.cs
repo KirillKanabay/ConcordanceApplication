@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Concordance.Interfaces;
 using Concordance.Model;
 
 namespace Concordance.Concordance
@@ -40,14 +38,6 @@ namespace Concordance.Concordance
 
                 ReportList[word].AddPage(page.Number);
             }
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            
-
-            return sb.ToString();
         }
     }
 }

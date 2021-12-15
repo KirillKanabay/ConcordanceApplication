@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Concordance.Interfaces;
+﻿using Concordance.Model.Options;
 using Microsoft.Extensions.Configuration;
 
 namespace Concordance.Configurations
@@ -11,28 +10,18 @@ namespace Concordance.Configurations
         {
             _configuration = configuration;
         }
-
-        public IEnumerable<string> GetInputFilePaths()
+        
+        public TextOptions GetTextOptions()
         {
-            List<string> inputFiles = new List<string>();
-            
-            var section = _configuration.GetSection("inputFiles");
-            foreach (var child in section.GetChildren())
-            {
-                inputFiles.Add(child.Value);
-            }
+            var section = _configuration.GetSection("TextOptions");
+            var textOptions = section.Get<TextOptions>();
 
-            return inputFiles;
+            return textOptions;
         }
 
         public string GetOutputDirectory()
         {
             return _configuration["outputDirectory"];
-        }
-
-        public int GetPageSize()
-        {
-            return int.Parse(_configuration["pageSize"]);
         }
     }
 }

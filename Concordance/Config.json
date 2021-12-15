@@ -1,8 +1,7 @@
 {
-  "PageSize" :  3,
-  "inputFiles": [
-    "text\\text.txt",
-    "text\\text2.txt"
-  ],
-  "outputDirectory": "result"
+  "TextOptions": {
+    "Path": "text\\text.txt",
+    "PageSize" : 3 
+  },
+  "OutputDirectory": "result"
 }
