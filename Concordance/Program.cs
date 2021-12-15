@@ -32,39 +32,9 @@ namespace Concordance
         
          
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            ParserResult parserResult = null;
-
-            FileStream fs = null;
-
-            try
-            {
-                fs = new FileStream("text.txt", FileMode.Open, FileAccess.Read);
-                using (var stp = new TextParser(fs, 3))
-                {
-                    parserResult = await stp.Parse();
-                }
-            }
-            catch (Exception ex)
-            {
-                ConsoleExtensions.WriteLineError(ex.Message);
-            }
-            finally
-            {
-                fs?.DisposeAsync();
-            }
-            
-
-            if (!parserResult.IsSuccess)
-            {
-                ConsoleExtensions.WriteLineError(parserResult.Error);
-            }
-
-            var report = new ConcordanceReport(parserResult.Text);
-            report.MakeReport();
-
-            Console.WriteLine(report);
+            _concordanceView.Show();
         }
     }
 }

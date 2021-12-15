@@ -7,71 +7,60 @@ using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
 using Concordance.Model;
+using Concordance.Model.Options;
 
 namespace Concordance.Parser
 {
-    public class TextParser : ITextParser, IDisposable
+    public class TextParser : ITextParser
     {
-        private readonly IStateGenerator _eventGenerator;
+        private readonly IStateGenerator _stateGenerator;
         private readonly IFiniteStateMachineBuilder _fsmBuilder;
-        private IFiniteStateMachine _fsm;
+        private readonly IFiniteStateMachine _fsm;
 
         private readonly IList<Page> _pagesBuffer;
         private readonly IList<Sentence> _sentenceBuffer;
         private readonly IList<BaseSentenceElement> _sentenceElementsBuffer;
         private readonly IList<char> _charBuffer;
 
+        private TextOptions _options;
+
         private char _lastReadChar;
         private int _lineCount = 1;
 
-        private readonly Stream _stream;
-        private readonly int _pageSize;
-
-        public TextParser(Stream stream, int pageSize)
+        public TextParser(IStateGenerator stateGenerator, IFiniteStateMachineBuilder fsmBuilder)
         {
-            _stream = stream;
-            _pageSize = pageSize;
+            _stateGenerator = stateGenerator;
+            _fsmBuilder = fsmBuilder;
+            _fsm = InitFSM();
 
             _pagesBuffer = new List<Page>();
             _sentenceBuffer = new List<Sentence>();
             _sentenceElementsBuffer = new List<BaseSentenceElement>();
             _charBuffer = new List<char>();
-
-            _eventGenerator = new StateGenerator();
-
-            _fsmBuilder = new FiniteStateMachineBuilder();
-
-            InitFSM();
+            
         }
 
-        public async Task<ParserResult> Parse()
+        public ParserResult Parse(TextOptions options)
         {
-            if (_pageSize < 0)
+            if (options == null)
             {
                 return new ParserResult()
                 {
-                    Error = "Page size can't be less than zero",
+                    Error = "Text options can't be null",
                     IsSuccess = false,
                 };
             }
 
-            if (_stream == null)
-            {
-                return new ParserResult()
-                {
-                    Error = "Stream can't be null",
-                    IsSuccess = false,
-                };
-            }
+            _options = options;
 
-            using (var sr = new StreamReader(_stream))
+            using (var sr = new StreamReader(options.Path))
             {
                 char[] buffer = new char[4096];
-                while (await sr.ReadAsync(buffer, 0, buffer.Length) != 0)
+                while (sr.Read(buffer, 0, buffer.Length) != 0)
                 {
                     foreach (var c in buffer)
                     {
-                        State nextState = _eventGenerator.Generate(c);
+                        State nextState = _stateGenerator.Generate(c);
                         _lastReadChar = c;
                         _fsm.MoveNext(nextState);
                     }
@@ -80,15 +69,16 @@ namespace Concordance.Parser
                 _fsm.MoveNext(State.EndOfFile);
             }
 
+            Clear();
+
             return new ParserResult()
             {
                 IsSuccess = true,
-                Text = new Text() { Name = "test", Pages = _pagesBuffer }
+                Text = new Text() {Name = "test", Pages = _pagesBuffer}
             };
         }
 
-
-        private void InitFSM()
+        private IFiniteStateMachine InitFSM()
         {
             _fsmBuilder.From(State.Inactive).To(State.Letter).Action(AppendToCharBuffer);
 
@@ -113,14 +103,14 @@ namespace Concordance.Parser
             _fsmBuilder.From(State.NewLine).To(State.NewLine).Action(AppendToCharBuffer);
             _fsmBuilder.From(State.NewLine).To(State.Separator).Action(AppendSeparator);
 
-            _fsm = _fsmBuilder.Build();
+            return _fsmBuilder.Build();
         }
 
         private void IncLineCount()
         {
             _lineCount++;
 
-            if (_lineCount == _pageSize)
+            if (_lineCount == _options.PageSize)
             {
                 AppendPage();
             }
@@ -172,7 +162,7 @@ namespace Concordance.Parser
             Page page = new Page()
             {
                 Sentences = new List<Sentence>(_sentenceBuffer),
-                Number = (int)Math.Ceiling(_lineCount / (double)_pageSize),
+                Number = (int) Math.Ceiling(_lineCount / (double) _options.PageSize),
             };
 
             _pagesBuffer.Add(page);
@@ -182,9 +172,16 @@ namespace Concordance.Parser
             _charBuffer.Clear();
         }
 
-        public void Dispose()
+        private void Clear()
         {
-            _stream?.Dispose();
+            _pagesBuffer.Clear();
+            _sentenceBuffer.Clear();
+            _sentenceElementsBuffer.Clear();
+            _charBuffer.Clear();
+
+            _options = null;
+
+            _lineCount = 1;
         }
     }
 }

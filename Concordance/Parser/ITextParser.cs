@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using Concordance.Model;
+﻿using Concordance.Model;
+using Concordance.Model.Options;
 
 namespace Concordance.Parser
 {
     public interface ITextParser
     {
-        Task<ParserResult> Parse();
+        ParserResult Parse(TextOptions options);
     }
 }
