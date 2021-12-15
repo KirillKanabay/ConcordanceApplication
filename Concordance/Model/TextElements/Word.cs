@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using Concordance.Model.TextElements;
 
-namespace Concordance.Model
+namespace Concordance.Model.TextElements
 {
     /// <summary>
     /// Класс слова

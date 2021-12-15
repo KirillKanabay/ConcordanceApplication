@@ -5,6 +5,7 @@ using Concordance.FSM.Builder;
 using Concordance.FSM.States;
 using Concordance.Model.Options;
 using Concordance.Parser;
+using Concordance.Services.Concordance;
 using Concordance.Validation;
 using Concordance.View;
 using FluentValidation;
@@ -33,6 +34,8 @@ namespace Concordance
             serviceCollection.AddSingleton<IStateGenerator, StateGenerator>();
             serviceCollection.AddTransient<IFiniteStateMachine, FiniteStateMachine>();
             serviceCollection.AddTransient<IFiniteStateMachineBuilder, FiniteStateMachineBuilder>();
+
+            serviceCollection.AddScoped<IConcordanceReportService, ConcordanceReportService>();
 
             return serviceCollection;
         }

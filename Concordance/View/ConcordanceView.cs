@@ -34,12 +34,15 @@ namespace Concordance.View
 
             
             var text = ParseText(textOptions);
-
             if (text == null)
             {
                 return;
             }
+
+            var 
         }
+
+        private 
 
         private Text ParseText(TextOptions options)
         {
@@ -47,7 +50,7 @@ namespace Concordance.View
 
             if (parserResult.IsSuccess)
             {
-                ConsoleExtensions.WriteLineWithColor("Текст распаршен. Приступается его обработка", ConsoleColor.Green);
+                ConsoleExtensions.WriteLineWithColor("Текст распаршен.", ConsoleColor.Green);
             }
             else
             {
