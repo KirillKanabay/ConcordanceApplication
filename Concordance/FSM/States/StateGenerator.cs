@@ -1,33 +1,33 @@
 ﻿using System.Linq;
 
-namespace Concordance.FSM.Events
+namespace Concordance.FSM.States
 {
-    public class EventGenerator : IEventGenerator
+    public class StateGenerator : IStateGenerator
     {
         private readonly char[] _endSentenceSeparators = {'.', '!', '?'};
 
-        public Event Generate(char ch)
+        public State Generate(char ch)
         {
-            Event parseEvent;
+            State parseState;
 
             if (_endSentenceSeparators.Contains(ch))
             {
-                parseEvent = Event.ReadEndSentenceSeparator;
+                parseState = State.EndSentenceSeparator;
             }
             else if(ch== '\n' || ch =='\r')
             {
-                parseEvent = Event.ReadNewLine;
+                parseState = State.NewLine;
             }
             else if (char.IsLetterOrDigit(ch) || ch == '\'')
             {
-                parseEvent = Event.ReadLetter;
+                parseState = State.Letter;
             }
             else
             {
-                parseEvent = Event.ReadSeparator;
+                parseState = State.Separator;
             }
 
-            return parseEvent;
+            return parseState;
         }
     }
 }

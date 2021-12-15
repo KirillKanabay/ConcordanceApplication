@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Concordance.FSM.Events;
 using Concordance.FSM.States;
 
 namespace Concordance.FSM
@@ -17,12 +16,12 @@ namespace Concordance.FSM
             _transitions = transitions;
         }
 
-        public void MoveNext(Event @event)
+        public void MoveNext(State state)
         {
-            StateTransition transition = new StateTransition(CurrentState, @event);
+            StateTransition transition = new StateTransition(CurrentState, state);
             if (!_transitions.TryGetValue(transition, out var nextState))
             {
-                throw new Exception($"Invalid transition: {CurrentState} -> {@event}");
+                throw new Exception($"Invalid transition: {CurrentState} -> {state}");
             }
 
             var action = _transitions.Keys.FirstOrDefault(k => k.Equals(transition))?.Action;

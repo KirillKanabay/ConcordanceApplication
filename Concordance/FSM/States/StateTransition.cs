@@ -1,34 +1,34 @@
 ﻿using System;
-using Concordance.FSM.Events;
 
 namespace Concordance.FSM.States
 {
     public class StateTransition
     {
         public readonly State CurrentState;
-        public readonly Event Event;
+        public readonly State NextState;
         public readonly Action Action;
 
-        public StateTransition(State currentState, Event parseEvent)
+        public StateTransition(State currentState, State nextState)
         {
             CurrentState = currentState;
-            Event = parseEvent;
+            NextState = nextState;
         }
         
-        public StateTransition(State currentState, Event parseEvent, Action action) : this(currentState, parseEvent)
+        public StateTransition(State currentState, State nextState, Action action) : this(currentState, nextState)
         {
             Action = action;
         }
         
         public override int GetHashCode()
         {
-            return 17 + 31 * CurrentState.GetHashCode() + 31 * Event.GetHashCode();
+            return 17 + 31 * CurrentState.GetHashCode() + 17 * NextState.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            StateTransition other = obj as StateTransition;
-            return other != null && this.CurrentState == other.CurrentState && this.Event == other.Event;
+            return obj is StateTransition other 
+                   && CurrentState == other.CurrentState 
+                   && NextState == other.NextState;
         }
     }
 }

@@ -36,15 +36,27 @@ namespace Concordance
 
         static async Task Main(string[] args)
         {
-            ParserResult parserResult;
-            
-            using (var fs = new FileStream("text.txt", FileMode.Open, FileAccess.Read))
+            ParserResult parserResult = null;
+
+            FileStream fs = null;
+
+            try
             {
+                fs = new FileStream("text.txt", FileMode.Open, FileAccess.Read);
                 using (var stp = new StreamTextParser(fs, 3))
                 {
                     parserResult = await stp.Parse();
                 }
             }
+            catch (Exception ex)
+            {
+                ConsoleExtensions.WriteLineError(ex.Message);
+            }
+            finally
+            {
+                fs?.DisposeAsync();
+            }
+            
 
             if (!parserResult.IsSuccess)
             {

@@ -4,6 +4,6 @@ namespace Concordance.FSM.Builder
 {
     public interface IToSetterBuilder
     {
-        IByEventSetterBuilder To(State state);
+        IActionSetterBuilder To(State state);
     }
 }

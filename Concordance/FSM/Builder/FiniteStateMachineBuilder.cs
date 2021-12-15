@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Concordance.FSM.Events;
 using Concordance.FSM.States;
 
 namespace Concordance.FSM.Builder
@@ -8,14 +7,12 @@ namespace Concordance.FSM.Builder
     public class FiniteStateMachineBuilder : 
         IFiniteStateMachineBuilder, 
         IToSetterBuilder,
-        IByEventSetterBuilder,
         IActionSetterBuilder
     {
         private readonly IDictionary<StateTransition, State> _transitions;
 
         private State _from;
         private State _to;
-        private Event _byEvent;
         private Action _action;
 
         public FiniteStateMachineBuilder()
@@ -35,20 +32,13 @@ namespace Concordance.FSM.Builder
             return this;
         }
 
-        public IByEventSetterBuilder To(State state)
+        public IActionSetterBuilder To(State state)
         {
             _to = state;
 
             return this;
         }
-
-        public IActionSetterBuilder ByEvent(Event parseEvent)
-        {
-            _byEvent = parseEvent;
-
-            return this;
-        }
-
+        
         public IFiniteStateMachineBuilder Action(Action action)
         {
             _action = action;
@@ -60,7 +50,9 @@ namespace Concordance.FSM.Builder
 
         private void AppendTransition()
         {
-            StateTransition transition = new StateTransition(_from, _byEvent, _action);
+            //TODO: Add validation
+
+            StateTransition transition = new StateTransition(_from, _to, _action);
 
             if (!_transitions.ContainsKey(transition))
             {

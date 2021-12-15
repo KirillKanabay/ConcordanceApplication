@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Concordance.FSM;
 using Concordance.FSM.Builder;
-using Concordance.FSM.Events;
 using Concordance.FSM.States;
 using Concordance.Model;
 
@@ -13,7 +12,7 @@ namespace Concordance.Parser
 {
     public class StreamTextParser : ITextParser, IDisposable
     {
-        private readonly IEventGenerator _eventGenerator;
+        private readonly IStateGenerator _eventGenerator;
         private readonly IFiniteStateMachineBuilder _fsmBuilder;
         private IFiniteStateMachine _fsm;
 
@@ -38,7 +37,7 @@ namespace Concordance.Parser
             _sentenceElementsBuffer = new List<BaseSentenceElement>();
             _charBuffer = new List<char>();
 
-            _eventGenerator = new EventGenerator();
+            _eventGenerator = new StateGenerator();
 
             _fsmBuilder = new FiniteStateMachineBuilder();
 
@@ -72,13 +71,13 @@ namespace Concordance.Parser
                 {
                     foreach (var c in buffer)
                     {
-                        Event parseEvent = _eventGenerator.Generate(c);
+                        State nextState = _eventGenerator.Generate(c);
                         _lastReadChar = c;
-                        _fsm.MoveNext(parseEvent);
+                        _fsm.MoveNext(nextState);
                     }
                 }
 
-                _fsm.MoveNext(Event.EndOfFile);
+                _fsm.MoveNext(State.EndOfFile);
             }
 
             return new ParserResult()
@@ -91,47 +90,28 @@ namespace Concordance.Parser
 
         private void InitFSM()
         {
-            _fsmBuilder.From(State.Inactive).To(State.Letter).ByEvent(Event.ReadLetter)
-                .Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.Inactive).To(State.Letter).Action(AppendToCharBuffer);
 
-            _fsmBuilder.From(State.Letter).To(State.Letter).ByEvent(Event.ReadLetter)
-                .Action(AppendToCharBuffer);
-            _fsmBuilder.From(State.Letter).To(State.Separator).ByEvent(Event.ReadSeparator)
-                .Action(AppendWord);
-            _fsmBuilder.From(State.Letter).To(State.NewLine).ByEvent(Event.ReadNewLine)
-                .Action(IncLineCount);
-            _fsmBuilder.From(State.Letter).To(State.EndSentenceSeparator).ByEvent(Event.ReadEndSentenceSeparator)
-                .Action(AppendWord);
+            _fsmBuilder.From(State.Letter).To(State.Letter).Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.Letter).To(State.Separator).Action(AppendWord);
+            _fsmBuilder.From(State.Letter).To(State.NewLine).Action(IncLineCount);
+            _fsmBuilder.From(State.Letter).To(State.EndSentenceSeparator).Action(AppendWord);
 
-            _fsmBuilder.From(State.Separator).To(State.Separator).ByEvent(Event.ReadSeparator)
-                .Action(AppendToCharBuffer);
-            _fsmBuilder.From(State.Separator).To(State.Letter).ByEvent(Event.ReadLetter)
-                .Action(AppendSeparator);
-            _fsmBuilder.From(State.Separator).To(State.NewLine).ByEvent(Event.ReadNewLine)
-                .Action(IncLineCount);
-            _fsmBuilder.From(State.Separator).To(State.EndSentenceSeparator).ByEvent(Event.ReadEndSentenceSeparator)
-                .Action(AppendSeparator);
-            _fsmBuilder.From(State.Separator).To(State.EndOfFile).ByEvent(Event.EndOfFile)
-                .Action(AppendPage);
+            _fsmBuilder.From(State.Separator).To(State.Separator).Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.Separator).To(State.Letter).Action(AppendSeparator);
+            _fsmBuilder.From(State.Separator).To(State.NewLine).Action(IncLineCount);
+            _fsmBuilder.From(State.Separator).To(State.EndSentenceSeparator).Action(AppendSeparator);
+            _fsmBuilder.From(State.Separator).To(State.EndOfFile).Action(AppendPage);
 
-            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndSentenceSeparator)
-                .ByEvent(Event.ReadEndSentenceSeparator)
-                .Action(AppendToCharBuffer);
-            _fsmBuilder.From(State.EndSentenceSeparator).To(State.Letter).ByEvent(Event.ReadLetter)
-                .Action(AppendSentence);
-            _fsmBuilder.From(State.EndSentenceSeparator).To(State.Separator).ByEvent(Event.ReadSeparator)
-                .Action(AppendSentence);
-            _fsmBuilder.From(State.EndSentenceSeparator).To(State.NewLine).ByEvent(Event.ReadNewLine)
-                .Action(AppendSentence);
-            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndOfFile).ByEvent(Event.EndOfFile)
-                .Action(AppendPage);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndSentenceSeparator).Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.Letter).Action(AppendSentence);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.Separator).Action(AppendSentence);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.NewLine).Action(AppendSentence);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndOfFile).Action(AppendPage);
 
-            _fsmBuilder.From(State.NewLine).To(State.Letter).ByEvent(Event.ReadLetter)
-                .Action(AppendSeparator);
-            _fsmBuilder.From(State.NewLine).To(State.NewLine).ByEvent(Event.ReadNewLine)
-                .Action(AppendToCharBuffer);
-            _fsmBuilder.From(State.NewLine).To(State.Separator).ByEvent(Event.ReadSeparator)
-                .Action(AppendSeparator);
+            _fsmBuilder.From(State.NewLine).To(State.Letter).Action(AppendSeparator);
+            _fsmBuilder.From(State.NewLine).To(State.NewLine).Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.NewLine).To(State.Separator).Action(AppendSeparator);
 
             _fsm = _fsmBuilder.Build();
         }
@@ -192,7 +172,7 @@ namespace Concordance.Parser
             Page page = new Page()
             {
                 Sentences = new List<Sentence>(_sentenceBuffer),
-                Number = _lineCount / _pageSize,
+                Number = (int)Math.Ceiling(_lineCount / (double)_pageSize),
             };
 
             _pagesBuffer.Add(page);
