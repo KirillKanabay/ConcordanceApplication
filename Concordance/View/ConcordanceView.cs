@@ -1,92 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Concordance.Concordance;
 using Concordance.Configurations;
 using Concordance.Helpers;
-using Concordance.Model;
+using Concordance.Model.Options;
+using Concordance.Parser;
 
 namespace Concordance.View
 {
     public class ConcordanceView
     {
-        private readonly IConfigurationParser _textInfoParser;
-
-        private ICollection<Text> _textList;
-        private int _pageSize;
-        private string _outputDirectory;
-
+        private readonly IConfigurationParser _configParser;
+        private readonly ITextParser _textParser;
         public ConcordanceView(IConfigurationParser textInfoParser)
         {
-            _textInfoParser = textInfoParser;
+            _configParser = textInfoParser;
         }
 
         public void Show()
         {
-            LoadTextList();
-            HandleTextList();
+            var textOptions = GetTextOptions();
+            if (textOptions == null)
+            {
+                return;
+            }
+
+            var outputDir = GetOutputDirectory();
+            if (outputDir == null)
+            {
+                return;
+            }
+
+
+            HandleText(textOptions, outputDir);
         }
 
-        private void LoadTextList()
+        private void HandleText(TextOptions options, string outputDir)
         {
-            ConsoleExtensions.WriteLineWithColor(
-                "!Пути к обрабатываемым файлам находятся в Config.json, убедитесь в правильности заполнения!",
-                ConsoleColor.Red);
-            Console.WriteLine();
-
-            if (ConsoleExtensions.CheckContinue("Желаете продолжить? (y/n):"))
-            {
-                IEnumerable<string> filePaths = GetFilePaths();
-                GetPageSize();
-                _textList = new List<Text>();
-                foreach (var filePath in filePaths)
-                {
-                    try
-                    {
-                        var reader = new TextFileReader(filePath, _pageSize);
-                        var text = reader.Read();
-                        _textList.Add(text);
-                        ConsoleExtensions.WriteLineWithColor($"Текст {text.Name} добавлен в обработку.",
-                            ConsoleColor.Green);
-                    }
-                    catch
-                    {
-                        ConsoleExtensions.WriteLineError($"Не удалось открыть файл: {filePath}");
-                    }
-                }
-            }
-            else
-            {
-                Environment.Exit(0);
-            }
-        }
-
-        private void HandleTextList()
-        {
-            ConsoleExtensions.WriteLineWithColor($"Загружено {_textList.Count()} файлов.", ConsoleColor.Green);
-            Console.WriteLine();
 
             if (ConsoleExtensions.CheckContinue("Начать обработку? (y/n):"))
             {
-                GetOutputDirectory();
-                foreach (var text in _textList)
-                {
-                    var report = new ConcordanceReport(text);
-                    report.MakeReport();
-                    try
-                    {
-                        var concordanceReportFileWriter = new ConcordanceReportFileWriter(_outputDirectory);
-                        concordanceReportFileWriter.Write(report);
-                        ConsoleExtensions.WriteLineWithColor($"{text.Name} - обработан.", ConsoleColor.Green);
-                    }
-                    catch (Exception e)
-                    {
-                        ConsoleExtensions.WriteLineError($"{text.Name} - ошибка обработки. Ошибка: {e.Message}");
-                    }
-                }
-
+                var parsedText = _textParser.Parse(options); 
                 Console.WriteLine();
-                ConsoleExtensions.WriteLineWithColor("Файлы обработаны.", ConsoleColor.Green);
+                ConsoleExtensions.WriteLineWithColor("Текст распаршен. Приступается его обработка", ConsoleColor.Green);
             }
             else
             {
@@ -94,47 +49,45 @@ namespace Concordance.View
             }
         }
 
-        private IEnumerable<string> GetFilePaths()
+        private TextOptions GetTextOptions()
         {
-            try
+            ConsoleExtensions.WriteLineWithColor(
+                "Настройки обрабатываемого текста находятся в Config.json, убедитесь в правильности заполнения!",
+                ConsoleColor.Red);
+
+            Console.WriteLine();
+
+            TextOptions options = null;
+
+            if (ConsoleExtensions.CheckContinue("Желаете продолжить? (y/n):"))
             {
-                return _textInfoParser.GetInputFilePaths();
-            }
-            catch (Exception e)
-            {
-                ConsoleExtensions.WriteLineError($"Не удалось извлечь пути к входным файлам: {e.Message}");
-                Environment.Exit(0);
+                try
+                {
+                    options = _configParser.GetTextOptions();
+                    ConsoleExtensions.WriteLineWithColor("Настройки текста загружены", ConsoleColor.Green);
+                }
+                catch
+                {
+                    ConsoleExtensions.WriteLineError("Не удалось прочитать файл конфигурации");
+                }
             }
 
-            return null;
+            return options;
         }
 
-        private int GetPageSize()
+        private string GetOutputDirectory()
         {
             try
             {
-                return _textInfoParser.GetPageSize();
-            }
-            catch (Exception e)
-            {
-                ConsoleExtensions.WriteLineError($"Не удалось извлечь размер страницы: {e.Message}");
-                Environment.Exit(0);
-            }
-
-            return -1;
-        }
-
-        private void GetOutputDirectory()
-        {
-            try
-            {
-                _outputDirectory = _textInfoParser.GetOutputDirectory();
+                var outputDirectory = _configParser.GetOutputDirectory();
             }
             catch (Exception e)
             {
                 ConsoleExtensions.WriteLineError($"Не удалось извлечь путь директории с результатами обработки: {e.Message}");
                 Environment.Exit(0);
             }
+
+            return null;
         }
     }
 }

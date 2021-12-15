@@ -10,7 +10,7 @@ using Concordance.Model;
 
 namespace Concordance.Parser
 {
-    public class StreamTextParser : ITextParser, IDisposable
+    public class TextParser : ITextParser, IDisposable
     {
         private readonly IStateGenerator _eventGenerator;
         private readonly IFiniteStateMachineBuilder _fsmBuilder;
@@ -27,7 +27,7 @@ namespace Concordance.Parser
         private readonly Stream _stream;
         private readonly int _pageSize;
 
-        public StreamTextParser(Stream stream, int pageSize)
+        public TextParser(Stream stream, int pageSize)
         {
             _stream = stream;
             _pageSize = pageSize;

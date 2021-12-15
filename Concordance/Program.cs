@@ -41,7 +41,7 @@ namespace Concordance
             try
             {
                 fs = new FileStream("text.txt", FileMode.Open, FileAccess.Read);
-                using (var stp = new StreamTextParser(fs, 3))
+                using (var stp = new TextParser(fs, 3))
                 {
                     parserResult = await stp.Parse();
                 }
