@@ -1,6 +1,7 @@
 ﻿using System;
 using Concordance.Configurations;
 using Concordance.Helpers;
+using Concordance.Model;
 using Concordance.Model.Options;
 using Concordance.Parser;
 
@@ -10,9 +11,10 @@ namespace Concordance.View
     {
         private readonly IConfigurationParser _configParser;
         private readonly ITextParser _textParser;
-        public ConcordanceView(IConfigurationParser textInfoParser)
+        public ConcordanceView(IConfigurationParser textInfoParser, ITextParser textParser)
         {
             _configParser = textInfoParser;
+            _textParser = textParser;
         }
 
         public void Show()
@@ -30,22 +32,30 @@ namespace Concordance.View
             }
 
 
-            HandleText(textOptions, outputDir);
+            var text = ParseText(textOptions);
+
+            if (text == null)
+            {
+                return;
+            }
         }
 
-        private void HandleText(TextOptions options, string outputDir)
+        private Text ParseText(TextOptions options)
         {
+            var parserResult = _textParser.Parse(options);
 
-            if (ConsoleExtensions.CheckContinue("Начать обработку? (y/n):"))
+            if (parserResult.IsSuccess)
             {
-                var parsedText = _textParser.Parse(options); 
-                Console.WriteLine();
                 ConsoleExtensions.WriteLineWithColor("Текст распаршен. Приступается его обработка", ConsoleColor.Green);
             }
             else
             {
-                Environment.Exit(0);
+                ConsoleExtensions.WriteLineError(parserResult.Error);
             }
+
+            Console.WriteLine();
+
+            return parserResult.Text;
         }
 
         private TextOptions GetTextOptions()
