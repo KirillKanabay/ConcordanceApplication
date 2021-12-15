@@ -34,7 +34,7 @@ namespace Concordance
             serviceCollection.AddTransient<IFiniteStateMachineBuilder, FiniteStateMachineBuilder>();
             serviceCollection.AddScoped<IConcordanceReportService, ConcordanceReportService>();
             serviceCollection.AddConcordanceConsoleWriter();
-
+            // serviceCollection.AddConcordanceFileWriter(configuration["OutputDirectory"]);
             return serviceCollection;
         }
 

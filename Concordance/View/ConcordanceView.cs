@@ -4,6 +4,7 @@ using Concordance.Model;
 using Concordance.Model.Options;
 using Concordance.Model.TextElements;
 using Concordance.Services.Concordance;
+using Concordance.Services.Concordance.Writer;
 using Concordance.Services.Configurations;
 using Concordance.Services.Parser;
 
@@ -14,14 +15,17 @@ namespace Concordance.View
         private readonly IConfigurationParserService _configParser;
         private readonly ITextParserService _textParser;
         private readonly IConcordanceReportService _concordanceReportService;
+        private readonly IConcordanceWriter _concordanceWriter;
 
         public ConcordanceView(IConfigurationParserService textInfoParser, 
             ITextParserService textParser,
-            IConcordanceReportService concordanceReportService)
+            IConcordanceReportService concordanceReportService,
+            IConcordanceWriter concordanceWriter)
         {
             _configParser = textInfoParser;
             _textParser = textParser;
             _concordanceReportService = concordanceReportService;
+            _concordanceWriter = concordanceWriter;
         }
 
         public void Show()
@@ -31,13 +35,6 @@ namespace Concordance.View
             {
                 return;
             }
-
-            var outputDir = GetOutputDirectory();
-            if (outputDir == null)
-            {
-                return;
-            }
-
             
             var text = ParseText(textOptions);
             if (text == null)
@@ -45,12 +42,23 @@ namespace Concordance.View
                 return;
             }
 
-            var 
+            var report = CreateConcordanceReport(text);
+            WriteConcordance(report);
         }
 
-        private ConcordanceReport CreateConcordanceReport()
+        private void WriteConcordance(ConcordanceReport report)
         {
+            ConsoleExtensions.WriteLineWithColor("Вывод отчета...", ConsoleColor.Green);
+            _concordanceWriter.Write(report);
+        }
 
+        private ConcordanceReport CreateConcordanceReport(Text text)
+        {
+            ConsoleExtensions.WriteLineWithColor("Создание конкорданс отчета...", ConsoleColor.Green);
+            var report = _concordanceReportService.Create(text);
+            ConsoleExtensions.WriteLineWithColor("Отчет выполнен", ConsoleColor.Green);
+            
+            return report;
         }
 
         private Text ParseText(TextOptions options)
@@ -95,23 +103,6 @@ namespace Concordance.View
             }
 
             return options;
-        }
-
-        private string GetOutputDirectory()
-        {
-            string outputDir = null;
-            try
-            {
-                outputDir = _configParser.GetOutputDirectory();
-                ConsoleExtensions.WriteLineWithColor($"Путь директории для результатов обработки извлечен", ConsoleColor.Green);
-            }
-            catch (Exception e)
-            {
-                ConsoleExtensions.WriteLineError($"Не удалось извлечь путь директории с результатами обработки: {e.Message}");
-                Environment.Exit(0);
-            }
-
-            return outputDir;
         }
     }
 }

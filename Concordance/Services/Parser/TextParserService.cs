@@ -57,13 +57,13 @@ namespace Concordance.Services.Parser
                 };
             }
 
-            ValidationResult result = _textOptionsValidator.Validate(options);
+            ValidationResult validationResult = _textOptionsValidator.Validate(options);
 
-            if (!result.IsValid)
+            if (!validationResult.IsValid)
             {
                 return new ParserResult()
                 {
-                    Error = result.ToString("\n"),
+                    Error = validationResult.ToString("\n"),
                     IsSuccess = false,
                 };
             }
@@ -86,17 +86,19 @@ namespace Concordance.Services.Parser
                 _fsm.MoveNext(State.EndOfFile);
             }
 
-            Clear();
-            
-            return new ParserResult()
+            var result = new ParserResult()
             {
                 IsSuccess = true,
                 Text = new Text()
                 {
-                    Name = options.Name, 
-                    Pages = _pagesBuffer
+                    Name = options.Name,
+                    Pages = new List<Page>(_pagesBuffer)
                 }
             };
+
+            Clear();
+
+            return result;
         }
 
         private IFiniteStateMachine InitFSM()
@@ -105,12 +107,12 @@ namespace Concordance.Services.Parser
 
             _fsmBuilder.From(State.Letter).To(State.Letter).Action(AppendToCharBuffer);
             _fsmBuilder.From(State.Letter).To(State.Separator).Action(AppendWord);
-            _fsmBuilder.From(State.Letter).To(State.NewLine).Action(IncLineCount);
+            _fsmBuilder.From(State.Letter).To(State.NewLine).Action(AppendNewLineAndWord);
             _fsmBuilder.From(State.Letter).To(State.EndSentenceSeparator).Action(AppendWord);
 
             _fsmBuilder.From(State.Separator).To(State.Separator).Action(AppendToCharBuffer);
             _fsmBuilder.From(State.Separator).To(State.Letter).Action(AppendSeparator);
-            _fsmBuilder.From(State.Separator).To(State.NewLine).Action(IncLineCount);
+            _fsmBuilder.From(State.Separator).To(State.NewLine).Action(AppendNewLine);
             _fsmBuilder.From(State.Separator).To(State.EndSentenceSeparator).Action(AppendSeparator);
             _fsmBuilder.From(State.Separator).To(State.EndOfFile).Action(AppendPage);
 
@@ -127,14 +129,20 @@ namespace Concordance.Services.Parser
             return _fsmBuilder.Build();
         }
 
-        private void IncLineCount()
+        private void AppendNewLine()
         {
             _lineCount++;
-
+            
             if (_lineCount == _options.PageSize)
             {
                 AppendPage();
             }
+        }
+
+        private void AppendNewLineAndWord()
+        {
+            AppendWord();
+            AppendNewLine();
         }
 
         private void AppendToCharBuffer()

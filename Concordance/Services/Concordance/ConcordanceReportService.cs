@@ -7,7 +7,7 @@ namespace Concordance.Services.Concordance
 {
     public class ConcordanceReportService : IConcordanceReportService
     {
-        public ConcordanceReport MakeReport(Text text)
+        public ConcordanceReport Create(Text text)
         {
             var report = new SortedList<Word, ConcordanceReportItem>();
 
