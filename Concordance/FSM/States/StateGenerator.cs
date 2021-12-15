@@ -14,7 +14,7 @@ namespace Concordance.FSM.States
             {
                 parseState = State.EndSentenceSeparator;
             }
-            else if(ch== '\n' || ch =='\r')
+            else if(ch == '\n' || ch == '\r')
             {
                 parseState = State.NewLine;
             }

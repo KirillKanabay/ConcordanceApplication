@@ -1,14 +1,15 @@
 ﻿using System.IO;
 using Concordance.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace Concordance.Services.Concordance.Writer
 {
     public class ConcordanceFileWriterService:IConcordanceWriter
     {
         private readonly string _directory;
-        public ConcordanceFileWriterService(string outputDirectory)
+        public ConcordanceFileWriterService(IConfiguration configuration)
         {
-            _directory = outputDirectory;
+            _directory = configuration["Output"];
         }
 
         public void Write(ConcordanceReport report)

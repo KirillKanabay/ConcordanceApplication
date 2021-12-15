@@ -9,7 +9,7 @@ namespace Concordance
             var services = Startup.ConfigureServices();
             var serviceProvider = services.BuildServiceProvider();
 
-            serviceProvider.GetService<EntryPoint>()?.Run();
+            serviceProvider.GetService<AppHost>()?.Run();
         }
     }
 }

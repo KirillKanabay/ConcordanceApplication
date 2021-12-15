@@ -2,13 +2,13 @@
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
-using Concordance.Helpers;
+using Concordance.Helpers.Logger;
 using Concordance.Model.Options;
 using Concordance.Services.Concordance;
+using Concordance.Services.Concordance.Writer;
 using Concordance.Services.Configurations;
 using Concordance.Services.Parser;
 using Concordance.Validation;
-using Concordance.View;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,18 +23,18 @@ namespace Concordance
 
             var configuration = GetConfiguration();
             serviceCollection.AddSingleton(configuration);
+            serviceCollection.AddSingleton<ILogger, Logger>();
 
-            serviceCollection.AddTransient<EntryPoint>();
+            serviceCollection.AddTransient<AppHost>();
             serviceCollection.AddScoped<IConfigurationParserService, ConfigurationParserService>();
             serviceCollection.AddScoped<IValidator<TextOptions>, TextOptionsValidator>();
             serviceCollection.AddScoped<ITextParserService, TextParserService>();
-            serviceCollection.AddTransient<IView, ConcordanceView>();
             serviceCollection.AddSingleton<IStateGenerator, StateGenerator>();
             serviceCollection.AddTransient<IFiniteStateMachine, FiniteStateMachine>();
             serviceCollection.AddTransient<IFiniteStateMachineBuilder, FiniteStateMachineBuilder>();
             serviceCollection.AddScoped<IConcordanceReportService, ConcordanceReportService>();
-            serviceCollection.AddConcordanceConsoleWriter();
-            // serviceCollection.AddConcordanceFileWriter(configuration["OutputDirectory"]);
+            serviceCollection.AddScoped<IConcordanceWriter, ConcordanceConsoleWriterService>();
+
             return serviceCollection;
         }
 

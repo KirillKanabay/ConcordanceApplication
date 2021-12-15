@@ -133,7 +133,7 @@ namespace Concordance.Services.Parser
         {
             _lineCount++;
             
-            if (_lineCount == _options.PageSize)
+            if (_lineCount % _options.PageSize == 0)
             {
                 AppendPage();
             }
