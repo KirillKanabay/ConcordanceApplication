@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Concordance.Model;
+using Concordance.Model.TextElements;
 
 namespace Concordance.Concordance
 {

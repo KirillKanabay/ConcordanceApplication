@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Concordance.Model.TextElements;
 
 namespace Concordance.Model
 {

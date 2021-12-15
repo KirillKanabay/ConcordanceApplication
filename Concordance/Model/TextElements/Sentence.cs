@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace Concordance.Model
+namespace Concordance.Model.TextElements
 {
     public class Sentence
     {

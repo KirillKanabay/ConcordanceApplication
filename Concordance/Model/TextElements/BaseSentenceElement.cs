@@ -1,4 +1,4 @@
-﻿namespace Concordance.Model
+﻿namespace Concordance.Model.TextElements
 {
     public abstract class BaseSentenceElement
     {

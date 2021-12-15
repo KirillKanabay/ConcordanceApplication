@@ -3,6 +3,7 @@ using Concordance.Configurations;
 using Concordance.Helpers;
 using Concordance.Model;
 using Concordance.Model.Options;
+using Concordance.Model.TextElements;
 using Concordance.Parser;
 
 namespace Concordance.View

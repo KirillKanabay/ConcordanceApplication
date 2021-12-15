@@ -8,6 +8,7 @@ using Concordance.FSM.Builder;
 using Concordance.FSM.States;
 using Concordance.Model;
 using Concordance.Model.Options;
+using Concordance.Model.TextElements;
 using FluentValidation;
 using FluentValidation.Results;
 

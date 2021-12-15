@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Concordance.Model;
+using Concordance.Model.TextElements;
 
 namespace Concordance.Concordance
 {
