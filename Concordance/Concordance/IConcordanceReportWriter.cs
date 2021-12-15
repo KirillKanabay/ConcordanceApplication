@@ -1,4 +1,4 @@
-﻿namespace Concordance.Interfaces
+﻿namespace Concordance.Concordance
 {
     public interface IConcordanceReportWriter
     {

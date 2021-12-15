@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Concordance.Concordance;
 using Concordance.Helpers;
 using Concordance.Interfaces;
-using Concordance.IO;
 using Concordance.Model;
-using Concordance.Report;
 
 namespace Concordance.View
 {

@@ -1,10 +1,9 @@
 ﻿using System.IO;
-using Concordance.Interfaces;
 using Concordance.Model;
 
-namespace Concordance.IO
+namespace Concordance.Concordance
 {
-    class TextFileReader : ITextReader
+    class TextFileReader
     {
         private readonly string _filePath;
         private readonly int _pageSize;

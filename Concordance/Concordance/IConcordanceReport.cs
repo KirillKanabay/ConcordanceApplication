@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Concordance.Model;
-using Concordance.Report;
 
-namespace Concordance.Interfaces
+namespace Concordance.Concordance
 {
     public interface IConcordanceReport
     {

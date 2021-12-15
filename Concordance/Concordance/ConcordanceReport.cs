@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Concordance.Interfaces;
 using Concordance.Model;
 
-namespace Concordance.Report
+namespace Concordance.Concordance
 {
     public class ConcordanceReport : IConcordanceReport
     {
@@ -46,23 +45,7 @@ namespace Concordance.Report
         public override string ToString()
         {
             var sb = new StringBuilder();
-            char prevFirstChar = ' ';
-
-            foreach (var item in ReportList.Values)
-            {
-                if (char.ToUpper(item.Word.FirstChar) != prevFirstChar)
-                {
-                    if (prevFirstChar != ' ')
-                    {
-                        sb.AppendLine();
-                    }
-
-                    prevFirstChar = char.ToUpper(item.Word.FirstChar);
-                    sb.AppendLine(prevFirstChar.ToString());
-                }
-
-                sb.AppendLine(item.ToString());
-            }
+            
 
             return sb.ToString();
         }
