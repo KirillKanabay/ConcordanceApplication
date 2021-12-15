@@ -1,14 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Concordance.Concordance;
-using Concordance.Configurations;
-using Concordance.Helpers;
-using Concordance.Model;
-using Concordance.Parser;
-using Concordance.View;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Concordance
 {

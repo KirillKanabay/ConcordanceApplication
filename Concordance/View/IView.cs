@@ -1,5 +1,4 @@
-﻿
-namespace Concordance.View
+﻿namespace Concordance.View
 {
     public interface IView
     {

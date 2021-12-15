@@ -1,5 +1,8 @@
 ﻿using System.IO;
 using Concordance.Configurations;
+using Concordance.FSM;
+using Concordance.FSM.Builder;
+using Concordance.FSM.States;
 using Concordance.Parser;
 using Concordance.View;
 using Microsoft.Extensions.Configuration;
@@ -17,9 +20,15 @@ namespace Concordance
 
             serviceCollection.AddSingleton<IConfigurationParser, ConfigurationParser>();
             serviceCollection.AddTransient<EntryPoint>();
+            
             serviceCollection.AddScoped<ITextParser, TextParser>();
             serviceCollection.AddTransient<IView, ConcordanceView>();
-            
+
+            serviceCollection.AddSingleton<IStateGenerator, StateGenerator>();
+
+            serviceCollection.AddTransient<IFiniteStateMachine, FiniteStateMachine>();
+            serviceCollection.AddTransient<IFiniteStateMachineBuilder, FiniteStateMachineBuilder>();
+
             return serviceCollection;
         }
 

@@ -31,7 +31,7 @@ namespace Concordance.View
                 return;
             }
 
-
+            
             var text = ParseText(textOptions);
 
             if (text == null)
@@ -61,7 +61,7 @@ namespace Concordance.View
         private TextOptions GetTextOptions()
         {
             ConsoleExtensions.WriteLineWithColor(
-                "Настройки обрабатываемого текста находятся в Config.json, убедитесь в правильности заполнения!",
+                "Настройки обрабатываемого текста находятся в appsettings.json, убедитесь в правильности заполнения!",
                 ConsoleColor.Red);
 
             Console.WriteLine();
@@ -86,9 +86,11 @@ namespace Concordance.View
 
         private string GetOutputDirectory()
         {
+            string outputDir = null;
             try
             {
-                var outputDirectory = _configParser.GetOutputDirectory();
+                outputDir = _configParser.GetOutputDirectory();
+                ConsoleExtensions.WriteLineWithColor($"Путь директории для результатов обработки извлечен", ConsoleColor.Green);
             }
             catch (Exception e)
             {
@@ -96,7 +98,7 @@ namespace Concordance.View
                 Environment.Exit(0);
             }
 
-            return null;
+            return outputDir;
         }
     }
 }
