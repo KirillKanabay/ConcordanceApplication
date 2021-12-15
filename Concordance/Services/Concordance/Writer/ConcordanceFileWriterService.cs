@@ -1,48 +1,75 @@
 ﻿using System.IO;
+using Concordance.Helpers.Logger;
 using Concordance.Model;
 using Microsoft.Extensions.Configuration;
 
 namespace Concordance.Services.Concordance.Writer
 {
-    public class ConcordanceFileWriterService:IConcordanceWriter
+    public class ConcordanceFileWriterService : IConcordanceWriterService
     {
         private readonly string _directory;
-        public ConcordanceFileWriterService(IConfiguration configuration)
+        private readonly ILogger _logger;
+
+        public ConcordanceFileWriterService(IConfiguration configuration, ILogger logger)
         {
+            _logger = logger;
             _directory = configuration["Output"];
         }
 
-        public void Write(ConcordanceReport report)
+        public ServiceResult Write(ConcordanceReport report)
         {
+
             if (!Directory.Exists(_directory))
             {
+                _logger.Information($"Creating output directory: {_directory}");
                 Directory.CreateDirectory(_directory);
             }
 
-            using (var fs = new FileStream($"{_directory}/{report.TextName}_ConcordanceReport.txt",
-                       FileMode.OpenOrCreate))
-            {
-                using (var writer = new StreamWriter(fs))
-                {
-                    char prevFirstChar = ' ';
+            string fileName = $"{_directory}/{report.TextName}_ConcordanceReport.txt";
 
-                    foreach (var item in report.Items)
+            _logger.Information($"Start writing concordance report in file: {fileName}");
+
+            try
+            {
+                using (var fs = new FileStream($"", FileMode.OpenOrCreate))
+                {
+                    using (var writer = new StreamWriter(fs))
                     {
-                        if (item.FirstChar != prevFirstChar)
+                        char prevFirstChar = ' ';
+
+                        foreach (var item in report.Items)
                         {
-                            if (prevFirstChar != ' ')
+                            if (item.FirstChar != prevFirstChar)
                             {
-                                writer.WriteLine();
+                                if (prevFirstChar != ' ')
+                                {
+                                    writer.WriteLine();
+                                }
+
+                                prevFirstChar = item.FirstChar;
+                                writer.WriteLine(item.FirstChar.ToString());
                             }
 
-                            prevFirstChar = item.FirstChar;
-                            writer.WriteLine(item.FirstChar.ToString());
+                            writer.WriteLine(item.ToString());
                         }
-
-                        writer.WriteLine(item.ToString());
                     }
                 }
             }
+            catch (IOException)
+            {
+                _logger.Error("File doesn't exists or being used by another process");
+
+                return new ServiceResult()
+                {
+                    IsSuccess = false,
+                    Error = "File doesn't exists or being used by another process",
+                };
+            }
+
+            return new ServiceResult()
+            {
+                IsSuccess = true
+            };
         }
     }
 }

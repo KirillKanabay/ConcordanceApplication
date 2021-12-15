@@ -16,12 +16,12 @@ namespace Concordance
         private readonly IConfigurationParserService _configParser;
         private readonly ITextParserService _textParser;
         private readonly IConcordanceReportService _concordanceReportService;
-        private readonly IConcordanceWriter _concordanceWriter;
+        private readonly IConcordanceWriterService _concordanceWriter;
 
         public AppHost(IConfigurationParserService textInfoParser,
             ITextParserService textParser,
             IConcordanceReportService concordanceReportService,
-            IConcordanceWriter concordanceWriter)
+            IConcordanceWriterService concordanceWriter)
         {
             _configParser = textInfoParser;
             _textParser = textParser;

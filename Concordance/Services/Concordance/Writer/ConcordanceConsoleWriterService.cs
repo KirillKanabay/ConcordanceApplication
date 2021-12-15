@@ -1,10 +1,11 @@
 ﻿using System;
+using Concordance.Constants;
 using Concordance.Helpers.Logger;
 using Concordance.Model;
 
 namespace Concordance.Services.Concordance.Writer
 {
-    public class ConcordanceConsoleWriterService : IConcordanceWriter
+    public class ConcordanceConsoleWriterService : IConcordanceWriterService
     {
         private readonly ILogger _logger;
         public ConcordanceConsoleWriterService(ILogger logger)
@@ -12,13 +13,18 @@ namespace Concordance.Services.Concordance.Writer
             _logger = logger;
         }
 
-        public void Write(ConcordanceReport report)
+        public ServiceResult Write(ConcordanceReport report)
         {
-            _logger.Information("Start writing concordance report.");
+            _logger.Information(InfoConstants.StartWritingReportToConsole);
 
             if (report == null)
             {
-                _logger.Error("ConcordanceConsoleWriterService: report can't be null");
+                _logger.Error(ErrorConstants.ConcordanceReportIsNull);
+                return new ServiceResult()
+                {
+                    IsSuccess = false,
+                    Error = ErrorConstants.ConcordanceReportIsNull,
+                };
             }
 
             char prevFirstChar = ' ';
@@ -38,6 +44,13 @@ namespace Concordance.Services.Concordance.Writer
 
                 Console.WriteLine(item.ToString());
             }
+
+            _logger.Information(InfoConstants.EndWritingReportToConsole);
+            
+            return new ServiceResult()
+            {
+                IsSuccess = true,
+            };
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Concordance.Constants;
 
 namespace Concordance.Helpers.Logger
 {
@@ -8,18 +9,20 @@ namespace Concordance.Helpers.Logger
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Error("Logger information message can't be whitespace or null");
+                Error(ErrorConstants.LogInfoIsEmpty);
             }
-            Console.WriteLine($"INFO: {message} \n");
+            ConsoleExtensions.WriteWithColor("INFO:", ConsoleColor.White, ConsoleColor.Blue);
+            Console.WriteLine($" {message} \n");
         }
 
         public void Error(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ConsoleExtensions.WriteLineError($"ERROR: Logger error message can't be whitespace or null\n");
+                Error(ErrorConstants.LogErrorIsEmpty);
             }
-            ConsoleExtensions.WriteLineError($"ERROR: {message} \n");    
+            ConsoleExtensions.WriteWithColor("INFO:", ConsoleColor.White, ConsoleColor.Red);
+            Console.WriteLine($" {message} \n");
         }
     }
 }

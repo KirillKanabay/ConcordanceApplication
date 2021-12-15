@@ -33,7 +33,7 @@ namespace Concordance
             serviceCollection.AddTransient<IFiniteStateMachine, FiniteStateMachine>();
             serviceCollection.AddTransient<IFiniteStateMachineBuilder, FiniteStateMachineBuilder>();
             serviceCollection.AddScoped<IConcordanceReportService, ConcordanceReportService>();
-            serviceCollection.AddScoped<IConcordanceWriter, ConcordanceConsoleWriterService>();
+            serviceCollection.AddScoped<IConcordanceWriterService, ConcordanceConsoleWriterService>();
 
             return serviceCollection;
         }
