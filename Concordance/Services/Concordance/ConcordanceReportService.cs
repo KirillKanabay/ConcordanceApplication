@@ -30,6 +30,7 @@ namespace Concordance.Services.Concordance
 
             return new ConcordanceReport()
             {
+                TextName = text.Name,
                 Items = report.Values
             };
         }

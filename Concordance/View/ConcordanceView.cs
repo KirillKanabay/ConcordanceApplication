@@ -3,6 +3,7 @@ using Concordance.Helpers;
 using Concordance.Model;
 using Concordance.Model.Options;
 using Concordance.Model.TextElements;
+using Concordance.Services.Concordance;
 using Concordance.Services.Configurations;
 using Concordance.Services.Parser;
 
@@ -12,10 +13,15 @@ namespace Concordance.View
     {
         private readonly IConfigurationParserService _configParser;
         private readonly ITextParserService _textParser;
-        public ConcordanceView(IConfigurationParserService textInfoParser, ITextParserService textParser)
+        private readonly IConcordanceReportService _concordanceReportService;
+
+        public ConcordanceView(IConfigurationParserService textInfoParser, 
+            ITextParserService textParser,
+            IConcordanceReportService concordanceReportService)
         {
             _configParser = textInfoParser;
             _textParser = textParser;
+            _concordanceReportService = concordanceReportService;
         }
 
         public void Show()
@@ -42,7 +48,10 @@ namespace Concordance.View
             var 
         }
 
-        private 
+        private ConcordanceReport CreateConcordanceReport()
+        {
+
+        }
 
         private Text ParseText(TextOptions options)
         {

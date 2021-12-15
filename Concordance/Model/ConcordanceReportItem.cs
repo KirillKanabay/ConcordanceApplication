@@ -10,6 +10,7 @@ namespace Concordance.Model
     /// </summary>
     public class ConcordanceReportItem
     {
+        public char FirstChar => char.ToUpper(Word.FirstChar);
         /// <summary>
         /// Слово
         /// </summary>

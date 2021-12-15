@@ -87,11 +87,15 @@ namespace Concordance.Services.Parser
             }
 
             Clear();
-
+            
             return new ParserResult()
             {
                 IsSuccess = true,
-                Text = new Text() {Name = "test", Pages = _pagesBuffer}
+                Text = new Text()
+                {
+                    Name = options.Name, 
+                    Pages = _pagesBuffer
+                }
             };
         }
 

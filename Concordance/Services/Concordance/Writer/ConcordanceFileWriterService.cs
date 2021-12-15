@@ -1,40 +1,41 @@
 ﻿using System.IO;
+using Concordance.Model;
 
-namespace Concordance.Concordance
+namespace Concordance.Services.Concordance.Writer
 {
-    public class ConcordanceReportFileWriter:IConcordanceReportWriter
+    public class ConcordanceFileWriterService:IConcordanceWriter
     {
         private readonly string _directory;
-        public ConcordanceReportFileWriter(string outputDirectory)
+        public ConcordanceFileWriterService(string outputDirectory)
         {
             _directory = outputDirectory;
         }
 
-        public void Write(IConcordanceReport report)
+        public void Write(ConcordanceReport report)
         {
             if (!Directory.Exists(_directory))
             {
                 Directory.CreateDirectory(_directory);
             }
 
-            using (var fs = new FileStream($"{_directory}/{report.Text.Name}_ConcordanceReport.txt",
+            using (var fs = new FileStream($"{_directory}/{report.TextName}_ConcordanceReport.txt",
                        FileMode.OpenOrCreate))
             {
                 using (var writer = new StreamWriter(fs))
                 {
                     char prevFirstChar = ' ';
 
-                    foreach (var item in report.ReportList.Values)
+                    foreach (var item in report.Items)
                     {
-                        if (char.ToUpper(item.Word.FirstChar) != prevFirstChar)
+                        if (item.FirstChar != prevFirstChar)
                         {
                             if (prevFirstChar != ' ')
                             {
                                 writer.WriteLine();
                             }
 
-                            prevFirstChar = char.ToUpper(item.Word.FirstChar);
-                            writer.WriteLine(prevFirstChar.ToString());
+                            prevFirstChar = item.FirstChar;
+                            writer.WriteLine(item.FirstChar.ToString());
                         }
 
                         writer.WriteLine(item.ToString());

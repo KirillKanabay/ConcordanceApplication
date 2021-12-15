@@ -2,6 +2,7 @@
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
+using Concordance.Helpers;
 using Concordance.Model.Options;
 using Concordance.Services.Concordance;
 using Concordance.Services.Configurations;
@@ -20,22 +21,19 @@ namespace Concordance
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddSingleton(GetConfiguration());
-            serviceCollection.AddSingleton<IConfigurationParserService, ConfigurationParserService>();
-            
+            var configuration = GetConfiguration();
+            serviceCollection.AddSingleton(configuration);
+
             serviceCollection.AddTransient<EntryPoint>();
-
+            serviceCollection.AddScoped<IConfigurationParserService, ConfigurationParserService>();
             serviceCollection.AddScoped<IValidator<TextOptions>, TextOptionsValidator>();
-
             serviceCollection.AddScoped<ITextParserService, TextParserService>();
-            
             serviceCollection.AddTransient<IView, ConcordanceView>();
-
             serviceCollection.AddSingleton<IStateGenerator, StateGenerator>();
             serviceCollection.AddTransient<IFiniteStateMachine, FiniteStateMachine>();
             serviceCollection.AddTransient<IFiniteStateMachineBuilder, FiniteStateMachineBuilder>();
-
             serviceCollection.AddScoped<IConcordanceReportService, ConcordanceReportService>();
+            serviceCollection.AddConcordanceConsoleWriter();
 
             return serviceCollection;
         }
