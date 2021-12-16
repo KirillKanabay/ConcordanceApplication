@@ -27,7 +27,7 @@ namespace Concordance.Services.Parser
         private readonly IList<Page> _pagesBuffer;
         private readonly IList<Sentence> _sentenceBuffer;
         private readonly IList<BaseSentenceElement> _sentenceElementsBuffer;
-        private readonly IList<char> _charBuffer;
+        private IList<char> _charBuffer;
 
         private TextOptions _options;
 
@@ -90,15 +90,28 @@ namespace Concordance.Services.Parser
             {
                 using (var sr = new StreamReader(options.Path))
                 {
-                    char[] buffer = new char[4096];
-                    while (sr.Read(buffer, 0, buffer.Length) != 0)
+                    int lastReadValue;
+                    while ((lastReadValue = sr.Read()) != -1)
                     {
-                        foreach (var c in buffer)
+                        _lastReadChar = (char) lastReadValue;
+                        State nextState = _stateGenerator.Parse(_lastReadChar);
+                        _charBuffer.Add(_lastReadChar);
+
+                        try
                         {
-                            State nextState = _stateGenerator.Parse(c);
-                            _lastReadChar = c;
-                            //todo: catch exception
                             _fsm.MoveNext(nextState);
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.Error($"{ErrorLogConstants.ParserError} {e.Message}");
+                            
+                            sr.Dispose();
+
+                            return new ServiceResult<Text>()
+                            {
+                                IsSuccess = false,
+                                Error = $"{ErrorLogConstants.ParserError} {e.Message}",
+                            };
                         }
                     }
 
@@ -130,72 +143,72 @@ namespace Concordance.Services.Parser
 
         private IFiniteStateMachine InitFSM()
         {
-            _fsmBuilder.From(State.Inactive).To(State.Letter).Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.Inactive).To(State.Letter).Action(() => { });
 
-            _fsmBuilder.From(State.Letter).To(State.Letter).Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.Letter).To(State.Letter).Action(() => { });
             _fsmBuilder.From(State.Letter).To(State.Separator).Action(AppendWord);
-            _fsmBuilder.From(State.Letter).To(State.NewLine).Action(AppendNewLineAndWord);
+            _fsmBuilder.From(State.Letter).To(State.Whitespace).Action(AppendWord);
+            _fsmBuilder.From(State.Letter).To(State.NewLine).Action(AppendWord);
             _fsmBuilder.From(State.Letter).To(State.EndSentenceSeparator).Action(AppendWord);
 
-            _fsmBuilder.From(State.Separator).To(State.Separator).Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.Whitespace).To(State.Letter).Action(AppendSeparator);
+            _fsmBuilder.From(State.Whitespace).To(State.NewLine).Action(ClearCharBuffer);
+            _fsmBuilder.From(State.Whitespace).To(State.Separator).Action(ClearCharBuffer);
+            _fsmBuilder.From(State.Whitespace).To(State.EndOfFile).Action(AppendPage);
+
+            _fsmBuilder.From(State.Separator).To(State.Separator).Action(AppendSeparator);
+            _fsmBuilder.From(State.Separator).To(State.Whitespace).Action(AppendSeparator);
             _fsmBuilder.From(State.Separator).To(State.Letter).Action(AppendSeparator);
-            _fsmBuilder.From(State.Separator).To(State.NewLine).Action(AppendNewLine);
+            _fsmBuilder.From(State.Separator).To(State.NewLine).Action(AppendSeparator);
             _fsmBuilder.From(State.Separator).To(State.EndSentenceSeparator).Action(AppendSeparator);
             _fsmBuilder.From(State.Separator).To(State.EndOfFile).Action(AppendPage);
 
-            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndSentenceSeparator).Action(AppendToCharBuffer);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndSentenceSeparator).Action(() => { });
             _fsmBuilder.From(State.EndSentenceSeparator).To(State.Letter).Action(AppendSentence);
             _fsmBuilder.From(State.EndSentenceSeparator).To(State.Separator).Action(AppendSentence);
             _fsmBuilder.From(State.EndSentenceSeparator).To(State.NewLine).Action(AppendSentence);
             _fsmBuilder.From(State.EndSentenceSeparator).To(State.EndOfFile).Action(AppendPage);
+            _fsmBuilder.From(State.EndSentenceSeparator).To(State.Whitespace).Action(AppendSentence);
 
-            _fsmBuilder.From(State.NewLine).To(State.Letter).Action(AppendSeparator);
-            _fsmBuilder.From(State.NewLine).To(State.NewLine).Action(AppendToCharBuffer);
-            _fsmBuilder.From(State.NewLine).To(State.Separator).Action(AppendSeparator);
+            _fsmBuilder.From(State.NewLine).To(State.Letter).Action(AppendNewLine);
+            _fsmBuilder.From(State.NewLine).To(State.NewLine).Action(() => { });
+            _fsmBuilder.From(State.NewLine).To(State.Separator).Action(AppendNewLine);
 
             return _fsmBuilder.Build();
         }
 
+        private void ClearCharBuffer()
+        {
+            _charBuffer = _charBuffer.TakeLast(1).ToList();
+        }
+
         private void AppendNewLine()
         {
-            _lineCount++;
-            
+            AppendSeparator();
             if (_lineCount % _options.PageSize == 0)
             {
                 AppendPage();
             }
-        }
 
-        private void AppendNewLineAndWord()
-        {
-            AppendWord();
-            AppendNewLine();
+            _lineCount++;
         }
-
-        private void AppendToCharBuffer()
-        {
-            _charBuffer.Add(_lastReadChar);
-        }
-
+        
         private void AppendWord()
         {
-            string word = new string(_charBuffer.ToArray());
+            string word = new string(_charBuffer.SkipLast(1).ToArray());
             Word wordInstance = new Word {Content = word};
             _sentenceElementsBuffer.Add(wordInstance);
 
-            _charBuffer.Clear();
-
-            AppendToCharBuffer();
+            ClearCharBuffer();
         }
 
         private void AppendSeparator()
         {
-            string separator = new string(_charBuffer.ToArray());
+            string separator = new string(_charBuffer.SkipLast(1).ToArray());
             Separator separatorInstance = new Separator() {Content = separator};
             _sentenceElementsBuffer.Add(separatorInstance);
 
-            _charBuffer.Clear();
-            AppendToCharBuffer();
+            ClearCharBuffer();
         }
 
         private void AppendSentence()
@@ -210,7 +223,7 @@ namespace Concordance.Services.Parser
 
             _sentenceElementsBuffer.Clear();
         }
-
+        
         private void AppendPage()
         {
             AppendSentence();
@@ -224,8 +237,6 @@ namespace Concordance.Services.Parser
             _pagesBuffer.Add(page);
 
             _sentenceBuffer.Clear();
-            _sentenceElementsBuffer.Clear();
-            _charBuffer.Clear();
         }
 
         private void Clear()

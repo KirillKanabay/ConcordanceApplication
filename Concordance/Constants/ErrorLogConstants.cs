@@ -31,5 +31,8 @@
 
         public const string FileNotExistsOrUsedByAnotherProcess
             = "File not exists or being used by another process!";
+
+        public const string ParserError
+            = "Parser error:";
     }
 }

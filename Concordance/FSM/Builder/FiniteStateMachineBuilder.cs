@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Concordance.FSM.States;
+using Concordance.Helpers.Logger;
 
 namespace Concordance.FSM.Builder
 {
@@ -10,6 +11,7 @@ namespace Concordance.FSM.Builder
         IActionSetterBuilder
     {
         private readonly IDictionary<StateTransition, State> _transitions;
+
 
         private State _from;
         private State _to;

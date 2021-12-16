@@ -4,6 +4,7 @@
     {
         Inactive,
         Letter,
+        Whitespace,
         Separator,
         EndSentenceSeparator,
         NewLine,

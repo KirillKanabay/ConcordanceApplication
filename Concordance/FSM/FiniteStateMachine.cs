@@ -23,7 +23,6 @@ namespace Concordance.FSM
             {
                 throw new Exception($"Invalid transition: {CurrentState} -> {state}");
             }
-
             var action = _transitions.Keys.FirstOrDefault(k => k.Equals(transition))?.Action;
             action?.Invoke();
             

@@ -16,5 +16,8 @@
 
         public const char SingleQuote
             = '\'';
+
+        public const char Whitespace
+            = ' ';
     }
 }

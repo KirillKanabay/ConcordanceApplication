@@ -13,6 +13,10 @@ namespace Concordance.FSM.States.Parser
             {
                 parseState = State.EndSentenceSeparator;
             }
+            else if (ch == CharConstants.Whitespace)
+            {
+                parseState = State.Whitespace;
+            }
             else if(ch == CharConstants.NewLine || ch == CharConstants.CarriageReturn)
             {
                 parseState = State.NewLine;

@@ -41,10 +41,14 @@ namespace Concordance.Services.Concordance
                 {
                     if (!reportList.ContainsKey(word))
                     {
-                        reportList.Add(word, new ConcordanceReportItem(word));
+                        reportList.Add(word, new ConcordanceReportItem()
+                        {
+                            PageNumbers = new List<int>(),
+                            Word = word
+                        });
                     }
 
-                    reportList[word].AddPage(page.Number);
+                    AddPageToConcordanceReportItem(reportList[word], page.Number);
                 }
             }
 
@@ -61,6 +65,16 @@ namespace Concordance.Services.Concordance
                 IsSuccess = true,
                 Data = report,
             };
+        }
+
+        private void AddPageToConcordanceReportItem(ConcordanceReportItem item, int pageNumber)
+        {
+            if (item.PageNumbers.FirstOrDefault(p => p == pageNumber) == default)
+            {
+                item.PageNumbers.Add(pageNumber);
+            }
+
+            item.Count++;
         }
     }
 }
