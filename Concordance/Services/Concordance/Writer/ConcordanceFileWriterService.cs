@@ -7,17 +7,21 @@ namespace Concordance.Services.Concordance.Writer
 {
     public class ConcordanceFileWriterService : IConcordanceWriterService
     {
-        private readonly string _directory;
+        private string _directory;
         private readonly ILogger _logger;
 
         public ConcordanceFileWriterService(IConfiguration configuration, ILogger logger)
         {
             _logger = logger;
-            _directory = configuration["Output"];
+            _directory = configuration["OutputDirectory"];
         }
 
         public ServiceResult Write(ConcordanceReport report)
         {
+            if (string.IsNullOrWhiteSpace(_directory))
+            {
+                _directory = "concordance_reports";
+            }
 
             if (!Directory.Exists(_directory))
             {
@@ -31,7 +35,7 @@ namespace Concordance.Services.Concordance.Writer
             //todo: check report to null
             try
             {
-                using (var fs = new FileStream($"", FileMode.OpenOrCreate))
+                using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
                 {
                     using (var writer = new StreamWriter(fs))
                     {
@@ -65,6 +69,8 @@ namespace Concordance.Services.Concordance.Writer
                     Error = $"File {fileName} doesn't exists or being used by another process",
                 };
             }
+
+            _logger.Information($"End writing concordance report in file: {fileName}");
 
             return new ServiceResult()
             {
