@@ -9,7 +9,7 @@ namespace Concordance.Helpers.Logger
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Error(ErrorConstants.LogInfoIsEmpty);
+                Error(ErrorLogConstants.LogInfoIsEmpty);
             }
             ConsoleExtensions.WriteWithColor("INFO:", ConsoleColor.White, ConsoleColor.Blue);
             Console.WriteLine($" {message} \n");
@@ -19,9 +19,19 @@ namespace Concordance.Helpers.Logger
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Error(ErrorConstants.LogErrorIsEmpty);
+                Error(ErrorLogConstants.LogErrorIsEmpty);
             }
             ConsoleExtensions.WriteWithColor("INFO:", ConsoleColor.White, ConsoleColor.Red);
+            Console.WriteLine($" {message} \n");
+        }
+
+        public void Success(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                Error(ErrorLogConstants.LogSuccessIsEmpty);
+            }
+            ConsoleExtensions.WriteWithColor("SUCCESS:", ConsoleColor.White, ConsoleColor.DarkGreen);
             Console.WriteLine($" {message} \n");
         }
     }

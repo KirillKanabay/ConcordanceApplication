@@ -15,15 +15,15 @@ namespace Concordance.Services.Concordance.Writer
 
         public ServiceResult Write(ConcordanceReport report)
         {
-            _logger.Information(InfoConstants.StartWritingReportToConsole);
+            _logger.Information(InfoLogConstants.StartWritingReportToConsole);
 
             if (report == null)
             {
-                _logger.Error(ErrorConstants.ConcordanceReportForWritingIsNull);
+                _logger.Error(ErrorLogConstants.ConcordanceReportForWritingIsNull);
                 return new ServiceResult()
                 {
                     IsSuccess = false,
-                    Error = ErrorConstants.ConcordanceReportForWritingIsNull,
+                    Error = ErrorLogConstants.ConcordanceReportForWritingIsNull,
                 };
             }
 
@@ -45,7 +45,7 @@ namespace Concordance.Services.Concordance.Writer
                 Console.WriteLine(item.ToString());
             }
 
-            _logger.Information(InfoConstants.EndWritingReportToConsole);
+            _logger.Success(SuccessLogConstants.WroteReportToConsole);
             
             return new ServiceResult()
             {

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Concordance.Constants;
 using Concordance.Helpers.Logger;
 using Concordance.Model;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,17 @@ namespace Concordance.Services.Concordance.Writer
 
         public ServiceResult Write(ConcordanceReport report)
         {
+            if (report == null)
+            {
+                _logger.Error(ErrorLogConstants.ConcordanceReportForWritingIsNull);
+                
+                return new ServiceResult()
+                {
+                    IsSuccess = false,
+                    Error = ErrorLogConstants.ConcordanceReportForWritingIsNull,
+                };
+            }
+            
             if (string.IsNullOrWhiteSpace(_directory))
             {
                 _directory = "concordance_reports";
@@ -31,11 +43,11 @@ namespace Concordance.Services.Concordance.Writer
 
             string fileName = $"{_directory}/{report.TextName}_ConcordanceReport.txt";
 
-            _logger.Information($"Start writing concordance report in file: {fileName}");
-            //todo: check report to null
+            _logger.Information($"{InfoLogConstants.StartWritingReportToFile} {fileName}");
+
             try
             {
-                using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
+                using (var fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
                 {
                     using (var writer = new StreamWriter(fs))
                     {
@@ -61,12 +73,12 @@ namespace Concordance.Services.Concordance.Writer
             }
             catch (IOException)
             {
-                _logger.Error($"File {fileName} doesn't exists or being used by another process");
+                _logger.Error($"{ErrorLogConstants.FileNotExistsOrUsedByAnotherProcess} {fileName}");
 
                 return new ServiceResult()
                 {
                     IsSuccess = false,
-                    Error = $"File {fileName} doesn't exists or being used by another process",
+                    Error = $"{ErrorLogConstants.FileNotExistsOrUsedByAnotherProcess} {fileName}",
                 };
             }
 

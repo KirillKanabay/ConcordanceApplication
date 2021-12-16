@@ -20,7 +20,7 @@ namespace Concordance.Services.Configurations
             var section = _configuration.GetSection("TextOptions");
             if (!section.Exists())
             {
-                _logger.Error(ErrorConstants.TextOptionsSectionNotExists);
+                _logger.Error(ErrorLogConstants.TextOptionsSectionNotExists);
                 return null;
             }
 

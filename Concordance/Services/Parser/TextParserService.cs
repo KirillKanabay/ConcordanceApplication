@@ -53,15 +53,15 @@ namespace Concordance.Services.Parser
 
         public ServiceResult<Text> Parse(TextOptions options)
         {
-            _logger.Information(InfoConstants.StartParsingText);
+            _logger.Information(InfoLogConstants.StartParsingText);
 
             if (options == null)
             {
-                _logger.Error(ErrorConstants.TextOptionsForParsingTextIsNull);
+                _logger.Error(ErrorLogConstants.TextOptionsForParsingTextIsNull);
 
                 return new ServiceResult<Text>()
                 {
-                    Error = ErrorConstants.TextOptionsForParsingTextIsNull,
+                    Error = ErrorLogConstants.TextOptionsForParsingTextIsNull,
                     IsSuccess = false,
                 };
             }
@@ -105,11 +105,11 @@ namespace Concordance.Services.Parser
             }
             catch (IOException)
             {
-                _logger.Error($"File {options.Path} doesn't exists or being used by another process");
+                _logger.Error($"{ErrorLogConstants.FileNotExistsOrUsedByAnotherProcess} {options.Path}");
             }
             
 
-            _logger.Information(InfoConstants.EndParsingText);
+            _logger.Success(SuccessLogConstants.ParsedText);
 
             var result = new ServiceResult<Text>()
             {

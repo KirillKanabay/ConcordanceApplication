@@ -15,13 +15,13 @@ namespace Concordance.Validation
                 FileInfo fileInfo = new FileInfo(path);
                 if (!fileInfo.Exists)
                 {
-                    context.AddFailure(ErrorConstants.TextPathNotExists);
+                    context.AddFailure(ErrorLogConstants.TextPathNotExists);
                 }
             });
 
             RuleFor(x => x.PageSize)
                 .Must(pageSize => pageSize > 0)
-                .WithMessage(ErrorConstants.PageSizeLessThanZero);
+                .WithMessage(ErrorLogConstants.PageSizeLessThanZero);
         }
     }
 }

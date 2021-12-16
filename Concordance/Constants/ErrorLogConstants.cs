@@ -1,13 +1,16 @@
 ﻿namespace Concordance.Constants
 {
-    public static class ErrorConstants
+    public static class ErrorLogConstants
     {
         public const string LogInfoIsEmpty 
             = "Logger information message can't be whitespace or null!";
 
         public const string LogErrorIsEmpty 
             = "Logger error message can't be whitespace or null!";
-        
+
+        public const string LogSuccessIsEmpty
+            = "Logger success message can't be whitespace or null";
+
         public const string ConcordanceReportForWritingIsNull 
             = "The process cannot write report, because concordance report is null!";
 
@@ -26,5 +29,7 @@
         public const string TextOptionsForParsingTextIsNull
             = "The process cannot parse text, because text options is null!";
 
+        public const string FileNotExistsOrUsedByAnotherProcess
+            = "File not exists or being used by another process!";
     }
 }

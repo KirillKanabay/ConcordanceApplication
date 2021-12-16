@@ -43,8 +43,12 @@ namespace Concordance
                 return;
             }
 
-            var report = _concordanceReportService.Create(parserTextResult.Data);
-            _concordanceWriter.Write(report.Data);
+            var reportResult = _concordanceReportService.Create(parserTextResult.Data);
+            if (!reportResult.IsSuccess)
+            {
+                return;
+            }
+            _concordanceWriter.Write(reportResult.Data);
 
         }
     }
