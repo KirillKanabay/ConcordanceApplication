@@ -32,16 +32,16 @@ namespace Concordance.Services.Concordance.Writer
             
             if (string.IsNullOrWhiteSpace(_directory))
             {
-                _directory = "concordance_reports";
+                _directory = WriterConstants.DefaultDir;
             }
 
             if (!Directory.Exists(_directory))
             {
-                _logger.Information($"Creating output directory: {_directory}");
+                _logger.Information($"{InfoLogConstants.StartCreatingDirectory} {_directory}");
                 Directory.CreateDirectory(_directory);
             }
 
-            string fileName = $"{_directory}/{report.TextName}_ConcordanceReport.txt";
+            string fileName = $"{_directory}/{report.TextName}_{WriterConstants.ReportFileName}";
 
             _logger.Information($"{InfoLogConstants.StartWritingReportToFile} {fileName}");
 

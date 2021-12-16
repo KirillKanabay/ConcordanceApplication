@@ -13,5 +13,8 @@
         
         public const string StartParsingText 
             = "Start parsing text.";
+
+        public const string StartCreatingDirectory
+            = "Start creating directory:";
     }
 }
