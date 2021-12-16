@@ -14,7 +14,7 @@ namespace Concordance.Services.Concordance.Writer
         public ConcordanceFileWriterService(IConfiguration configuration, ILogger logger)
         {
             _logger = logger;
-            _directory = configuration["OutputDirectory"];
+            _directory = configuration[ConfigurationConstants.OutputConcordanceDirSection];
         }
 
         public ServiceResult Write(ConcordanceReport report)

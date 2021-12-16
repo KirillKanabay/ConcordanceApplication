@@ -17,7 +17,7 @@ namespace Concordance.Services.Configurations
         
         public TextOptions GetTextOptions()
         {
-            var section = _configuration.GetSection("TextOptions");
+            var section = _configuration.GetSection(ConfigurationConstants.TextOptionsSection);
             if (!section.Exists())
             {
                 _logger.Error(ErrorLogConstants.TextOptionsSectionNotExists);

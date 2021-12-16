@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Concordance.Constants;
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
@@ -42,7 +43,7 @@ namespace Concordance
         {
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                .AddJsonFile(ConfigurationConstants.ConfigurationPath, optional: false, reloadOnChange: true);
             
             return configurationBuilder.Build();
         }
