@@ -3,7 +3,7 @@ using Concordance.Constants;
 using Concordance.Model.Options;
 using FluentValidation;
 
-namespace Concordance.Validation
+namespace Concordance.Services.Validation
 {
     public class TextOptionsValidator : AbstractValidator<TextOptions>
     {

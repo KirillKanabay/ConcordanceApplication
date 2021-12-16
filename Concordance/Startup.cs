@@ -10,7 +10,7 @@ using Concordance.Services.Concordance;
 using Concordance.Services.Concordance.Writer;
 using Concordance.Services.Configurations;
 using Concordance.Services.Parser;
-using Concordance.Validation;
+using Concordance.Services.Validation;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

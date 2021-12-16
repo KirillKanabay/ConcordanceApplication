@@ -79,7 +79,7 @@ namespace Concordance.Services.Parser
 
                 return new ServiceResult<Text>()
                 {
-                    Error = validationResult.ToString("\n"),
+                    Error = validationResult.ToString(CharConstants.NewLine.ToString()),
                     IsSuccess = false,
                 };
             }
@@ -97,6 +97,7 @@ namespace Concordance.Services.Parser
                         {
                             State nextState = _stateGenerator.Parse(c);
                             _lastReadChar = c;
+                            //todo: catch exception
                             _fsm.MoveNext(nextState);
                         }
                     }
