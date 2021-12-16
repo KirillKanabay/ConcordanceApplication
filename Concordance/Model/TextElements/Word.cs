@@ -2,14 +2,8 @@
 
 namespace Concordance.Model.TextElements
 {
-    /// <summary>
-    /// Класс слова
-    /// </summary>
     public class Word : BaseSentenceElement, IComparable<Word>
     {
-        /// <summary>
-        /// Первая буква слова
-        /// </summary>
         public char FirstChar => Content[0];
 
         public int CompareTo(Word other)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Concordance.FSM.States;
-using Concordance.Helpers.Logger;
 
 namespace Concordance.FSM.Builder
 {

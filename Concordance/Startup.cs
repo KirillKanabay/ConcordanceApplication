@@ -4,7 +4,7 @@ using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
 using Concordance.FSM.States.Parser;
-using Concordance.Helpers.Logger;
+using Concordance.Infrastructure.Logger;
 using Concordance.Model.Options;
 using Concordance.Services.Concordance;
 using Concordance.Services.Concordance.Writer;

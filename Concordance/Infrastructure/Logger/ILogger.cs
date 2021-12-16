@@ -1,4 +1,4 @@
-﻿namespace Concordance.Helpers.Logger
+﻿namespace Concordance.Infrastructure.Logger
 {
     public interface ILogger
     {

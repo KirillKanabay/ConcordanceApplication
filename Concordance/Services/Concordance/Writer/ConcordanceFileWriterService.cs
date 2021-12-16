@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using Concordance.Constants;
-using Concordance.Helpers.Logger;
+using Concordance.Infrastructure.Logger;
 using Concordance.Model;
 using Microsoft.Extensions.Configuration;
 

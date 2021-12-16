@@ -1,6 +1,6 @@
 ﻿using System;
 using Concordance.Constants;
-using Concordance.Helpers.Logger;
+using Concordance.Infrastructure.Logger;
 using Concordance.Model;
 
 namespace Concordance.Services.Concordance.Writer

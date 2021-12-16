@@ -1,5 +1,5 @@
 ﻿using Concordance.Constants;
-using Concordance.Helpers.Logger;
+using Concordance.Infrastructure.Logger;
 using Concordance.Model.Options;
 using Microsoft.Extensions.Configuration;
 

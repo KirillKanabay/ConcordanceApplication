@@ -1,7 +1,8 @@
 ﻿using System;
 using Concordance.Constants;
+using Concordance.Helpers;
 
-namespace Concordance.Helpers.Logger
+namespace Concordance.Infrastructure.Logger
 {
     public class Logger : ILogger
     {
