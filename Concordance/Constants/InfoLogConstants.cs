@@ -6,7 +6,7 @@
             = "Start writing concordance report to console.";
 
         public const string StartWritingReportToFile
-            = "Start writing concordance report in file:";
+            = "Start writing concordance report to file:";
 
         public const string StartCreatingReport 
             = "Start creating concordance report.";

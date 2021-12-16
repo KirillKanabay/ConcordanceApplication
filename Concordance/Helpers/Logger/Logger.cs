@@ -12,8 +12,8 @@ namespace Concordance.Helpers.Logger
                 Error(ErrorLogConstants.LogInfoIsEmpty);
                 return;
             }
-            ConsoleExtensions.WriteWithColor("INFO:", ConsoleColor.White, ConsoleColor.Blue);
-            Console.WriteLine($" {message} \n");
+            ConsoleExtensions.WriteWithColor(LogConstants.Info, ConsoleColor.White, ConsoleColor.Blue);
+            Console.WriteLine($" {message} {Environment.NewLine}");
         }
 
         public void Error(string message)
@@ -23,8 +23,8 @@ namespace Concordance.Helpers.Logger
                 Error(ErrorLogConstants.LogErrorIsEmpty);
                 return;
             }
-            ConsoleExtensions.WriteWithColor("INFO:", ConsoleColor.White, ConsoleColor.Red);
-            Console.WriteLine($" {message} \n");
+            ConsoleExtensions.WriteWithColor(LogConstants.Error, ConsoleColor.White, ConsoleColor.Red);
+            Console.WriteLine($" {message} {Environment.NewLine}");
         }
 
         public void Success(string message)
@@ -34,8 +34,8 @@ namespace Concordance.Helpers.Logger
                 Error(ErrorLogConstants.LogSuccessIsEmpty);
                 return;
             }
-            ConsoleExtensions.WriteWithColor("SUCCESS:", ConsoleColor.White, ConsoleColor.DarkGreen);
-            Console.WriteLine($" {message} \n");
+            ConsoleExtensions.WriteWithColor(LogConstants.Success, ConsoleColor.White, ConsoleColor.DarkGreen);
+            Console.WriteLine($" {message} {Environment.NewLine}");
         }
     }
 }

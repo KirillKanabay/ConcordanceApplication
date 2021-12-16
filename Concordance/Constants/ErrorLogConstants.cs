@@ -9,7 +9,7 @@
             = "Logger error message can't be whitespace or null!";
 
         public const string LogSuccessIsEmpty
-            = "Logger success message can't be whitespace or null";
+            = "Logger success message can't be whitespace or null!";
 
         public const string ConcordanceReportForWritingIsNull 
             = "The process cannot write report, because concordance report is null!";

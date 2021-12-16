@@ -82,7 +82,7 @@ namespace Concordance.Services.Concordance.Writer
                 };
             }
 
-            _logger.Information($"End writing concordance report in file: {fileName}");
+            _logger.Success($"{SuccessLogConstants.WroteReportToFile} {fileName}");
 
             return new ServiceResult()
             {
