@@ -10,6 +10,7 @@ namespace Concordance.Helpers.Logger
             if (string.IsNullOrWhiteSpace(message))
             {
                 Error(ErrorLogConstants.LogInfoIsEmpty);
+                return;
             }
             ConsoleExtensions.WriteWithColor("INFO:", ConsoleColor.White, ConsoleColor.Blue);
             Console.WriteLine($" {message} \n");
@@ -20,6 +21,7 @@ namespace Concordance.Helpers.Logger
             if (string.IsNullOrWhiteSpace(message))
             {
                 Error(ErrorLogConstants.LogErrorIsEmpty);
+                return;
             }
             ConsoleExtensions.WriteWithColor("INFO:", ConsoleColor.White, ConsoleColor.Red);
             Console.WriteLine($" {message} \n");
@@ -30,6 +32,7 @@ namespace Concordance.Helpers.Logger
             if (string.IsNullOrWhiteSpace(message))
             {
                 Error(ErrorLogConstants.LogSuccessIsEmpty);
+                return;
             }
             ConsoleExtensions.WriteWithColor("SUCCESS:", ConsoleColor.White, ConsoleColor.DarkGreen);
             Console.WriteLine($" {message} \n");
