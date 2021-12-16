@@ -51,13 +51,13 @@ namespace Concordance.Services.Concordance.Writer
                 {
                     using (var writer = new StreamWriter(fs))
                     {
-                        char prevFirstChar = ' ';
+                        char prevFirstChar = CharConstants.Empty;
 
                         foreach (var item in report.Items)
                         {
                             if (item.FirstChar != prevFirstChar)
                             {
-                                if (prevFirstChar != ' ')
+                                if (prevFirstChar != CharConstants.Empty)
                                 {
                                     writer.WriteLine();
                                 }

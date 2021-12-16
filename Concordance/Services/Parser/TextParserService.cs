@@ -6,6 +6,7 @@ using Concordance.Constants;
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
+using Concordance.FSM.States.Parser;
 using Concordance.Helpers.Logger;
 using Concordance.Model;
 using Concordance.Model.Options;
@@ -17,7 +18,7 @@ namespace Concordance.Services.Parser
 {
     public class TextParserService : ITextParserService
     {
-        private readonly IStateGenerator _stateGenerator;
+        private readonly IStateParser _stateGenerator;
         private readonly IFiniteStateMachineBuilder _fsmBuilder;
         private readonly IFiniteStateMachine _fsm;
         private readonly IValidator<TextOptions> _textOptionsValidator;
@@ -33,7 +34,7 @@ namespace Concordance.Services.Parser
         private char _lastReadChar;
         private int _lineCount = 1;
 
-        public TextParserService(IStateGenerator stateGenerator, 
+        public TextParserService(IStateParser stateGenerator, 
             IFiniteStateMachineBuilder fsmBuilder,
             IValidator<TextOptions> textOptionsValidator,
             ILogger logger)
@@ -94,7 +95,7 @@ namespace Concordance.Services.Parser
                     {
                         foreach (var c in buffer)
                         {
-                            State nextState = _stateGenerator.Generate(c);
+                            State nextState = _stateGenerator.Parse(c);
                             _lastReadChar = c;
                             _fsm.MoveNext(nextState);
                         }

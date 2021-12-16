@@ -27,13 +27,13 @@ namespace Concordance.Services.Concordance.Writer
                 };
             }
 
-            char prevFirstChar = ' ';
+            char prevFirstChar = CharConstants.Empty;
 
             foreach (var item in report.Items)
             {
                 if (item.FirstChar != prevFirstChar)
                 {
-                    if (prevFirstChar != ' ')
+                    if (prevFirstChar != CharConstants.Empty)
                     {
                         Console.WriteLine();
                     }

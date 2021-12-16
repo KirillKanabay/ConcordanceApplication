@@ -1,24 +1,23 @@
 ﻿using System.Linq;
+using Concordance.Constants;
 
-namespace Concordance.FSM.States
+namespace Concordance.FSM.States.Parser
 {
-    public class StateGenerator : IStateGenerator
+    public class StateParser : IStateParser
     {
-        private readonly char[] _endSentenceSeparators = {'.', '!', '?'};
-
-        public State Generate(char ch)
+        public State Parse(char ch)
         {
             State parseState;
 
-            if (_endSentenceSeparators.Contains(ch))
+            if (CharConstants.EndSentenceSeparators.Contains(ch))
             {
                 parseState = State.EndSentenceSeparator;
             }
-            else if(ch == '\n' || ch == '\r')
+            else if(ch == CharConstants.NewLine || ch == CharConstants.CarriageReturn)
             {
                 parseState = State.NewLine;
             }
-            else if (char.IsLetterOrDigit(ch) || ch == '\'')
+            else if (char.IsLetterOrDigit(ch) || ch == CharConstants.SingleQuote)
             {
                 parseState = State.Letter;
             }

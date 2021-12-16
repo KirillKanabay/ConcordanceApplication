@@ -3,6 +3,7 @@ using Concordance.Constants;
 using Concordance.FSM;
 using Concordance.FSM.Builder;
 using Concordance.FSM.States;
+using Concordance.FSM.States.Parser;
 using Concordance.Helpers.Logger;
 using Concordance.Model.Options;
 using Concordance.Services.Concordance;
@@ -30,7 +31,7 @@ namespace Concordance
             serviceCollection.AddScoped<IConfigurationParserService, ConfigurationParserService>();
             serviceCollection.AddScoped<IValidator<TextOptions>, TextOptionsValidator>();
             serviceCollection.AddScoped<ITextParserService, TextParserService>();
-            serviceCollection.AddSingleton<IStateGenerator, StateGenerator>();
+            serviceCollection.AddSingleton<IStateParser, StateParser>();
             serviceCollection.AddTransient<IFiniteStateMachine, FiniteStateMachine>();
             serviceCollection.AddTransient<IFiniteStateMachineBuilder, FiniteStateMachineBuilder>();
             serviceCollection.AddScoped<IConcordanceReportService, ConcordanceReportService>();
