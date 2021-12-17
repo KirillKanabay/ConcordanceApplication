@@ -17,15 +17,15 @@ namespace Concordance.Services.Concordance
 
         public ServiceResult<ConcordanceReport> Create(Text text)
         {
-            _logger.Information(InfoLogConstants.StartCreatingReport);
+            _logger.Information(LogConstants.StartCreatingReport);
 
             if (text == null)
             {
-                _logger.Error(ErrorLogConstants.TextForReportingIsNull);
+                _logger.Warning(LogConstants.TextForReportingIsNull);
                 return new ServiceResult<ConcordanceReport>()
                 {
                     IsSuccess = false,
-                    Error = ErrorLogConstants.TextForReportingIsNull,
+                    Error = LogConstants.TextForReportingIsNull,
                 };
             }
 
@@ -58,7 +58,7 @@ namespace Concordance.Services.Concordance
                 Items = reportList.Values
             };
 
-            _logger.Success(SuccessLogConstants.CreatedReport);
+            _logger.Information(LogConstants.CreatedReport);
 
             return new ServiceResult<ConcordanceReport>()
             {

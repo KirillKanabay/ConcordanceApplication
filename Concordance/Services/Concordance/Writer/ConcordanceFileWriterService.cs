@@ -14,36 +14,36 @@ namespace Concordance.Services.Concordance.Writer
         public ConcordanceFileWriterService(IConfiguration configuration, ILogger logger)
         {
             _logger = logger;
-            _directory = configuration[ConfigurationConstants.OutputConcordanceDirSection];
+            _directory = configuration[DataConstants.ConfigurationOutputDirSection];
         }
 
         public ServiceResult Write(ConcordanceReport report)
         {
             if (report == null)
             {
-                _logger.Error(ErrorLogConstants.ConcordanceReportForWritingIsNull);
+                _logger.Warning(LogConstants.ConcordanceReportForWritingIsNull);
                 
                 return new ServiceResult()
                 {
                     IsSuccess = false,
-                    Error = ErrorLogConstants.ConcordanceReportForWritingIsNull,
+                    Error = LogConstants.ConcordanceReportForWritingIsNull,
                 };
             }
             
             if (string.IsNullOrWhiteSpace(_directory))
             {
-                _directory = WriterConstants.DefaultDir;
+                _directory = DataConstants.DefaultDir;
             }
 
             if (!Directory.Exists(_directory))
             {
-                _logger.Information($"{InfoLogConstants.StartCreatingDirectory} {_directory}");
+                _logger.Information($"{LogConstants.StartCreatingDirectory} {_directory}");
                 Directory.CreateDirectory(_directory);
             }
 
-            string fileName = $"{_directory}/{report.TextName}_{WriterConstants.ReportFileName}";
+            string fileName = $"{_directory}/{report.TextName}_{DataConstants.ReportFileName}";
 
-            _logger.Information($"{InfoLogConstants.StartWritingReportToFile} {fileName}");
+            _logger.Information($"{LogConstants.StartWritingReportToFile} {fileName}");
 
             try
             {
@@ -51,13 +51,13 @@ namespace Concordance.Services.Concordance.Writer
                 {
                     using (var writer = new StreamWriter(fs))
                     {
-                        char prevFirstChar = CharConstants.Empty;
+                        char prevFirstChar = DataConstants.EmptyChar;
 
                         foreach (var item in report.Items)
                         {
                             if (item.FirstChar != prevFirstChar)
                             {
-                                if (prevFirstChar != CharConstants.Empty)
+                                if (prevFirstChar != DataConstants.EmptyChar)
                                 {
                                     writer.WriteLine();
                                 }
@@ -71,18 +71,18 @@ namespace Concordance.Services.Concordance.Writer
                     }
                 }
             }
-            catch (IOException)
+            catch (IOException ex)
             {
-                _logger.Error($"{ErrorLogConstants.FileNotExistsOrUsedByAnotherProcess} {fileName}");
+                _logger.Error($"{LogConstants.FileNotExistsOrUsedByAnotherProcess} {fileName}. Exception message: {ex.Message}");
 
                 return new ServiceResult()
                 {
                     IsSuccess = false,
-                    Error = $"{ErrorLogConstants.FileNotExistsOrUsedByAnotherProcess} {fileName}",
+                    Error = $"{LogConstants.FileNotExistsOrUsedByAnotherProcess} {fileName}",
                 };
             }
 
-            _logger.Success($"{SuccessLogConstants.WroteReportToFile} {fileName}");
+            _logger.Information($"{LogConstants.WroteReportToFile} {fileName}");
 
             return new ServiceResult()
             {

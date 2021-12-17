@@ -44,7 +44,7 @@ namespace Concordance
         {
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(ConfigurationConstants.ConfigurationPath, optional: false, reloadOnChange: true);
+                .AddJsonFile(DataConstants.ConfigurationPath, optional: false, reloadOnChange: true);
             
             return configurationBuilder.Build();
         }

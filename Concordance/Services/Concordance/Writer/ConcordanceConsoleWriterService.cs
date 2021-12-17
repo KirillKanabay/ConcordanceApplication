@@ -15,25 +15,25 @@ namespace Concordance.Services.Concordance.Writer
 
         public ServiceResult Write(ConcordanceReport report)
         {
-            _logger.Information(InfoLogConstants.StartWritingReportToConsole);
+            _logger.Information(LogConstants.StartWritingReportToConsole);
 
             if (report == null)
             {
-                _logger.Error(ErrorLogConstants.ConcordanceReportForWritingIsNull);
+                _logger.Warning(LogConstants.ConcordanceReportForWritingIsNull);
                 return new ServiceResult()
                 {
                     IsSuccess = false,
-                    Error = ErrorLogConstants.ConcordanceReportForWritingIsNull,
+                    Error = LogConstants.ConcordanceReportForWritingIsNull,
                 };
             }
 
-            char prevFirstChar = CharConstants.Empty;
+            char prevFirstChar = DataConstants.EmptyChar;
 
             foreach (var item in report.Items)
             {
                 if (item.FirstChar != prevFirstChar)
                 {
-                    if (prevFirstChar != CharConstants.Empty)
+                    if (prevFirstChar != DataConstants.EmptyChar)
                     {
                         Console.WriteLine();
                     }
@@ -45,7 +45,7 @@ namespace Concordance.Services.Concordance.Writer
                 Console.WriteLine(item.ToString());
             }
 
-            _logger.Success(SuccessLogConstants.WroteReportToConsole);
+            _logger.Information(LogConstants.WroteReportToConsole);
             
             return new ServiceResult()
             {

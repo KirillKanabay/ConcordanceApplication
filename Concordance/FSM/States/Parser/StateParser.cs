@@ -9,19 +9,19 @@ namespace Concordance.FSM.States.Parser
         {
             State parseState;
 
-            if (CharConstants.EndSentenceSeparators.Contains(ch))
+            if (DataConstants.EndSentenceSeparators.Contains(ch))
             {
                 parseState = State.EndSentenceSeparator;
             }
-            else if (ch == CharConstants.Whitespace)
+            else if (ch == DataConstants.Whitespace)
             {
                 parseState = State.Whitespace;
             }
-            else if(ch == CharConstants.NewLine || ch == CharConstants.CarriageReturn)
+            else if(ch == DataConstants.NewLine || ch == DataConstants.CarriageReturn)
             {
                 parseState = State.NewLine;
             }
-            else if (char.IsLetterOrDigit(ch) || ch == CharConstants.SingleQuote)
+            else if (char.IsLetterOrDigit(ch) || ch == DataConstants.SingleQuote)
             {
                 parseState = State.Letter;
             }

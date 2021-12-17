@@ -17,10 +17,10 @@ namespace Concordance.Services.Configurations
         
         public TextOptions GetTextOptions()
         {
-            var section = _configuration.GetSection(ConfigurationConstants.TextOptionsSection);
+            var section = _configuration.GetSection(DataConstants.ConfigurationTextOptionsSection);
             if (!section.Exists())
             {
-                _logger.Error(ErrorLogConstants.TextOptionsSectionNotExists);
+                _logger.Warning(LogConstants.TextOptionsSectionNotExists);
                 return null;
             }
 

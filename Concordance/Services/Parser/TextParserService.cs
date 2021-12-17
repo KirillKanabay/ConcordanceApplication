@@ -54,15 +54,15 @@ namespace Concordance.Services.Parser
 
         public ServiceResult<Text> Parse(TextOptions options)
         {
-            _logger.Information(InfoLogConstants.StartParsingText);
+            _logger.Information(LogConstants.StartParsingText);
 
             if (options == null)
             {
-                _logger.Error(ErrorLogConstants.TextOptionsForParsingTextIsNull);
+                _logger.Warning(LogConstants.TextOptionsForParsingTextIsNull);
 
                 return new ServiceResult<Text>()
                 {
-                    Error = ErrorLogConstants.TextOptionsForParsingTextIsNull,
+                    Error = LogConstants.TextOptionsForParsingTextIsNull,
                     IsSuccess = false,
                 };
             }
@@ -74,12 +74,12 @@ namespace Concordance.Services.Parser
 
                 foreach (var error in validationResult.Errors)
                 {
-                    _logger.Error(error.ErrorMessage);
+                    _logger.Warning(error.ErrorMessage);
                 }
 
                 return new ServiceResult<Text>()
                 {
-                    Error = validationResult.ToString(CharConstants.NewLine.ToString()),
+                    Error = validationResult.ToString(DataConstants.NewLine.ToString()),
                     IsSuccess = false,
                 };
             }
@@ -103,14 +103,14 @@ namespace Concordance.Services.Parser
                         }
                         catch (Exception e)
                         {
-                            _logger.Error($"{ErrorLogConstants.ParserError} {e.Message}");
+                            _logger.Error($"{LogConstants.ParserError} {e.Message}");
                             
                             sr.Dispose();
 
                             return new ServiceResult<Text>()
                             {
                                 IsSuccess = false,
-                                Error = $"{ErrorLogConstants.ParserError} {e.Message}",
+                                Error = $"{LogConstants.ParserError} {e.Message}",
                             };
                         }
                     }
@@ -118,13 +118,13 @@ namespace Concordance.Services.Parser
                     _fsm.MoveNext(State.EndOfFile);
                 }
             }
-            catch (IOException)
+            catch (IOException ex)
             {
-                _logger.Error($"{ErrorLogConstants.FileNotExistsOrUsedByAnotherProcess} {options.Path}");
+                _logger.Error($"{LogConstants.FileNotExistsOrUsedByAnotherProcess} {options.Path}. Exception: {ex.Message}");
             }
             
 
-            _logger.Success(SuccessLogConstants.ParsedText);
+            _logger.Information(LogConstants.ParsedText);
 
             var result = new ServiceResult<Text>()
             {

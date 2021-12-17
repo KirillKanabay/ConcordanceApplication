@@ -10,7 +10,7 @@ namespace Concordance.Infrastructure.Logger
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Error(ErrorLogConstants.LogInfoIsEmpty);
+                Error(LogConstants.LogInfoIsEmpty);
                 return;
             }
             ConsoleExtensions.WriteWithColor(LogConstants.Info, ConsoleColor.White, ConsoleColor.Blue);
@@ -21,21 +21,21 @@ namespace Concordance.Infrastructure.Logger
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Error(ErrorLogConstants.LogErrorIsEmpty);
+                Error(LogConstants.LogErrorIsEmpty);
                 return;
             }
             ConsoleExtensions.WriteWithColor(LogConstants.Error, ConsoleColor.White, ConsoleColor.Red);
             Console.WriteLine($" {message} {Environment.NewLine}");
         }
 
-        public void Success(string message)
+        public void Warning(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Error(ErrorLogConstants.LogSuccessIsEmpty);
+                Error(LogConstants.LogWarningIsEmpty);
                 return;
             }
-            ConsoleExtensions.WriteWithColor(LogConstants.Success, ConsoleColor.White, ConsoleColor.DarkGreen);
+            ConsoleExtensions.WriteWithColor(LogConstants.Warning, ConsoleColor.White, ConsoleColor.DarkYellow);
             Console.WriteLine($" {message} {Environment.NewLine}");
         }
     }
