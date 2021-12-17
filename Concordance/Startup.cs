@@ -24,16 +24,18 @@ namespace Concordance
             var serviceCollection = new ServiceCollection();
 
             var configuration = GetConfiguration();
+            
             serviceCollection.AddSingleton(configuration);
             serviceCollection.AddSingleton<ILogger, Logger>();
 
             serviceCollection.AddTransient<AppHost>();
-            serviceCollection.AddScoped<IConfigurationParserService, ConfigurationParserService>();
-            serviceCollection.AddScoped<IValidator<TextOptions>, TextOptionsValidator>();
-            serviceCollection.AddScoped<ITextParserService, TextParserService>();
-            serviceCollection.AddSingleton<IStateParser, StateParser>();
             serviceCollection.AddTransient<IFiniteStateMachine, FiniteStateMachine>();
             serviceCollection.AddTransient<IFiniteStateMachineBuilder, FiniteStateMachineBuilder>();
+            serviceCollection.AddTransient<ITextParserService, TextParserService>();
+
+            serviceCollection.AddScoped<IStateParser, StateParser>();
+            serviceCollection.AddScoped<IConfigurationParserService, ConfigurationParserService>();
+            serviceCollection.AddScoped<IValidator<TextOptions>, TextOptionsValidator>();
             serviceCollection.AddScoped<IConcordanceReportService, ConcordanceReportService>();
             serviceCollection.AddScoped<IConcordanceWriterService, ConcordanceConsoleWriterService>();
 

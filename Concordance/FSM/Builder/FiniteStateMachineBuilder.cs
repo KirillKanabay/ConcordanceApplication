@@ -51,8 +51,6 @@ namespace Concordance.FSM.Builder
 
         private void AppendTransition()
         {
-            //TODO: Add validation
-
             StateTransition transition = new StateTransition(_from, _to, _action);
 
             if (!_transitions.ContainsKey(transition))
