@@ -11,7 +11,6 @@ namespace Concordance.FSM.Builder
     {
         private readonly IDictionary<StateTransition, State> _transitions;
 
-
         private State _from;
         private State _to;
         private Action _action;
