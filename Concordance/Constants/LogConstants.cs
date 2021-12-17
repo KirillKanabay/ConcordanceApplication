@@ -29,7 +29,7 @@
         public const string TextPathNotExists
             = "Text path not exists!";
 
-        public const string PageSizeLessThanZero
+        public const string PageSizeLessThanMinSize
             = "Page size must be more 0!";
 
         public const string TextOptionsSectionNotExists

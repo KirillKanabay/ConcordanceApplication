@@ -21,7 +21,7 @@ namespace Concordance.Services.Validation
 
             RuleFor(x => x.PageSize)
                 .Must(pageSize => pageSize >= DataConstants.MinPageSize)
-                .WithMessage(LogConstants.PageSizeLessThanZero);
+                .WithMessage(LogConstants.PageSizeLessThanMinSize);
         }
     }
 }
